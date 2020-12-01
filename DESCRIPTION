@@ -10,6 +10,10 @@ License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 Imports:
-  db.censusnz
+    db.censusnz,
+    magrittr
 Remotes:
   harmonic-analytics/db-censusnz
+RoxygenNote: 7.1.1
+Suggests: 
+    testthat

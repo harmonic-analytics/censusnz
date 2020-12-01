@@ -1,19 +1,96 @@
-#' Title
+#' Get New Zealand census data
 #'
-#' @return
+#' @return The resulting dataframe for the requested geography, variables
+#'
+#' @param geography A string of the geographic area to be selected. Must be one of SA1, SA2, LBA, DHB, TA, RC
+#' @param variables A string or character vector of the variables to be selected. Can use get_variables() to examine available variables
+#'
+#'
 #' @export
 #'
 #' @examples
-get_data() <- function() {
+#' get_data("SA1", c("maori_descent", "smoking_status"))
+get_data <- function(geography, variables, year = 2018) {
+    # Make sure a geography(s) is provided
+    assertthat::assert_that(!is.null(geography), msg = "Must provide a geography")
 
+    # Make sure a variable(s) is provided
+    #assertthat::assert_that(!is.null(geography), msg = "Must provide a variable(s)")
+
+    # Setup
+    result <- tibble::tribble(~geoid, ~land_type, ~name, ~variable, ~variable_group, ~count)
+
+    # Cast area_type to uppercase
+    geography = toupper(geography)
+    variables <- match.arg(tolower(variables), unique(db.censusnz::available_variables$variable), several.ok = TRUE) #refactor
+
+    # Make sure area type is one of the accepted types
+    types = c("SA1", "SA2", "LBA", "DHB", "TA", "RC")
+    assertthat::assert_that(geography %in% types, msg = "geography must be one of SA1, SA2, LBA, DHB, TA, RC")
+
+    # Construct the name of the required dataframe
+    df_name = geography
+
+    # Gather the data and return it
+    #res = eval(parse(text = paste0("db.censusnz::", df_name)))
+    geography_df = eval(parse(text = paste0("db.censusnz::", df_name)))
+
+    # Filter data
+    #res = res %>% dplyr::filter(variable %in% variables)
+
+    # Filter Data
+    relevant_hierarchies <- c(
+      "LANDWATER_NAME",
+      colnames(geography_df %>% dplyr::select(dplyr::ends_with("_CODE") | dplyr::ends_with("_NAME")))
+    )
+
+    land_type <- db.censusnz::area_hierarchy %>%
+      dplyr::select(tidyselect::any_of(relevant_hierarchies)) %>% # renames
+      dplyr::rename(land_type = LANDWATER_NAME) %>% # renames LANDWATER_NAME column to land_type
+      dplyr::mutate(dplyr::across(where(is.factor), as.character)) %>% # converts factor cols to character
+      dplyr::distinct() %>% # don't know if we need this
+      # skipping the arrange for now
+      dplyr::group_by(dplyr::across(-starts_with("land_type"))) %>% # group by anything that's not land type
+      dplyr::summarise(land_type = land_type[1], n_landtype = dplyr::n()) %>%
+      dplyr::mutate(land_type = dplyr::if_else(n_landtype > 1, "Mixture", land_type)) %>% # i can't seem to actually generate any mixtures
+      dplyr::select(-n_landtype) %>%
+      dplyr::ungroup()
+
+    # invisible(
+    #   land_type <- db.censusnz::area_hierarchy %>%
+    #     dplyr::select(tidyselect::any_of(relevant_hierarchies)) %>%
+    #     dplyr::rename(land_type = LANDWATER_NAME) %>%
+    #     dplyr::mutate_if(is.factor, as.character) %>%
+    #     dplyr::distinct() %>%
+    #     dplyr::arrange_at(relevant_hierarchies[-1]) %>%
+    #     dplyr::group_by_at(relevant_hierarchies[-1]) %>%
+    #     dplyr::summarise(land_type = land_type[1], n_landtype = dplyr::n()) %>%
+    #     dplyr::mutate(land_type = dplyr::if_else(n_landtype > 1, "Mixture", land_type)) %>%
+    #     dplyr::select(-n_landtype) %>%
+    #     dplyr::ungroup()
+    # )
+
+    suppressMessages((
+      result = geography_df %>%
+        dplyr::filter(variable %in% variables) %>%
+        dplyr::left_join(land_type) %>%
+        dplyr::rename(geoid = dplyr::ends_with("_CODE")) %>%
+        dplyr::rename(name = dplyr::ends_with("_NAME")) %>%
+        dplyr::select(geoid, land_type, dplyr::everything())
+    ))
+
+    return (result)
 }
 
-#' Title
+#' Get NZ census variables
 #'
-#' @return
+#' @return A table of available variables, which can be queried with get_data()
 #' @export
 #'
 #' @examples
-get_variables() <- function() {
+#' get_variables()
+get_variables <- function() {
+    res = eval(parse(text = paste0("db.censusnz::", "available_variables")))
 
+    return(res)
 }

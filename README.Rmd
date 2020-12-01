@@ -1,0 +1,54 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+pkgload::load_all(export_all=FALSE, helpers=FALSE)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# censusnz
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+# Overview
+
+This package provides an interface to the NZ Census data, returning tidyverse-ready data frames.
+
+Currently, the __censusnz__ package provides data for seven geographical areas:
+
+* **SA1**: Statistical Area 1
+* **SA2**: Statistical Area 2
+* **WARD**: Ward
+* **DHB**: District Health Board
+* **LBA**: Local Board Area (Auckland region only)
+* **TA**: Territorial Authority
+* **RC**: Regional Council
+
+This package automatically installs the __db.censusnz__ package.
+
+## Installation
+
+To install this package from gitlab, you must first generate a Personal Access Token; the package can then be installed using the Remotes package:
+
+```{r, eval=FALSE}
+remotes::install_gitlab(repo = 'harmonic/packages/censusnz', auth_token = <PAT>, host = 'gitlab.harmonic.co.nz')
+```
+
+## Example
+
+A basic call to get_data() for a particular geography and variables:
+
+```{r example}
+library(censusnz)
+
+get_data("RC", c("maori_descent", "smoking_status")) %>% head()
+```
