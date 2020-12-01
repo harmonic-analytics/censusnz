@@ -10,6 +10,8 @@ get_data(geography, variables, year = 2018)
 \item{geography}{A string of the geographic area to be selected. Must be one of SA1, SA2, LBA, DHB, TA, RC}
 
 \item{variables}{A string or character vector of the variables to be selected. Can use get_variables() to examine available variables}
+
+\item{year}{The year of data requested. Currently the only available year is 2018, which is the default}
 }
 \value{
 The resulting dataframe for the requested geography, variables

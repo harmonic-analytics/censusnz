@@ -4,25 +4,32 @@
 #'
 #' @param geography A string of the geographic area to be selected. Must be one of SA1, SA2, LBA, DHB, TA, RC
 #' @param variables A string or character vector of the variables to be selected. Can use get_variables() to examine available variables
-#'
+#' @param year The year of data requested. Currently the only available year is 2018, which is the default
 #'
 #' @export
 #'
 #' @examples
 #' get_data("SA1", c("maori_descent", "smoking_status"))
-get_data <- function(geography, variables, year = 2018) {
+  get_data <- function(geography, variables, year = 2018) {
+    geoid = NULL
+    LANDWATER_NAME = NULL
+    variable = NULL
+    n_landtype = NULL
+
     # Make sure a geography(s) is provided
     assertthat::assert_that(!is.null(geography), msg = "Must provide a geography")
 
     # Make sure a variable(s) is provided
-    #assertthat::assert_that(!is.null(geography), msg = "Must provide a variable(s)")
+    assertthat::assert_that(!is.null(geography), msg = "Must provide a variable(s)")
 
     # Setup
     result <- tibble::tribble(~geoid, ~land_type, ~name, ~variable, ~variable_group, ~count)
 
     # Cast area_type to uppercase
     geography = toupper(geography)
-    variables <- match.arg(tolower(variables), unique(db.censusnz::available_variables$variable), several.ok = TRUE) #refactor
+    if(!is.null(variables)){
+      variables <- match.arg(tolower(variables), unique(db.censusnz::available_variables$variable), several.ok = TRUE)
+    }
 
     # Make sure area type is one of the accepted types
     types = c("SA1", "SA2", "LBA", "DHB", "TA", "RC")
@@ -32,11 +39,7 @@ get_data <- function(geography, variables, year = 2018) {
     df_name = geography
 
     # Gather the data and return it
-    #res = eval(parse(text = paste0("db.censusnz::", df_name)))
     geography_df = eval(parse(text = paste0("db.censusnz::", df_name)))
-
-    # Filter data
-    #res = res %>% dplyr::filter(variable %in% variables)
 
     # Filter Data
     relevant_hierarchies <- c(
@@ -47,28 +50,14 @@ get_data <- function(geography, variables, year = 2018) {
     land_type <- db.censusnz::area_hierarchy %>%
       dplyr::select(tidyselect::any_of(relevant_hierarchies)) %>% # renames
       dplyr::rename(land_type = LANDWATER_NAME) %>% # renames LANDWATER_NAME column to land_type
-      dplyr::mutate(dplyr::across(where(is.factor), as.character)) %>% # converts factor cols to character
-      dplyr::distinct() %>% # don't know if we need this
-      # skipping the arrange for now
-      dplyr::group_by(dplyr::across(-starts_with("land_type"))) %>% # group by anything that's not land type
+      dplyr::mutate(dplyr::across(tidyselect::vars_select_helpers$where(is.factor), as.character)) %>% # converts factor cols to character (note where is unexported)
+      dplyr::distinct() %>% # carried over from previous code
+      #dplyr::arrange_at(relevant_hierarchies[relevant_hierarchies %in% colnames(db.censusnz::area_hierarchy)[-8]]) %>% # broken atm
+      dplyr::group_by(dplyr::across(-tidyselect::starts_with("land_type"))) %>% # group by anything that's not land type
       dplyr::summarise(land_type = land_type[1], n_landtype = dplyr::n()) %>%
-      dplyr::mutate(land_type = dplyr::if_else(n_landtype > 1, "Mixture", land_type)) %>% # i can't seem to actually generate any mixtures
+      dplyr::mutate(land_type = dplyr::if_else(n_landtype > 1, "Mixture", land_type)) %>%
       dplyr::select(-n_landtype) %>%
       dplyr::ungroup()
-
-    # invisible(
-    #   land_type <- db.censusnz::area_hierarchy %>%
-    #     dplyr::select(tidyselect::any_of(relevant_hierarchies)) %>%
-    #     dplyr::rename(land_type = LANDWATER_NAME) %>%
-    #     dplyr::mutate_if(is.factor, as.character) %>%
-    #     dplyr::distinct() %>%
-    #     dplyr::arrange_at(relevant_hierarchies[-1]) %>%
-    #     dplyr::group_by_at(relevant_hierarchies[-1]) %>%
-    #     dplyr::summarise(land_type = land_type[1], n_landtype = dplyr::n()) %>%
-    #     dplyr::mutate(land_type = dplyr::if_else(n_landtype > 1, "Mixture", land_type)) %>%
-    #     dplyr::select(-n_landtype) %>%
-    #     dplyr::ungroup()
-    # )
 
     suppressMessages((
       result = geography_df %>%
