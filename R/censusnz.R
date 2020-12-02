@@ -1,3 +1,12 @@
+#' censusnz: A package for accessing New Zealand census data
+#'
+#' The package provides two functions as an interface for retrieving variables and data from the db.censusnz package.
+#' See ?censusnz::get_data or ?censusnz::get_variables for examples
+#'
+#' @docType package
+#' @name censusnz
+NULL
+
 #' Get New Zealand census data
 #'
 #' @return The resulting dataframe for the requested geography, variables
@@ -10,6 +19,7 @@
 #'
 #' @examples
 #' get_data("SA1", c("maori_descent", "smoking_status"))
+
   get_data <- function(geography, variables, year = 2018) {
     geoid = NULL
     LANDWATER_NAME = NULL
@@ -42,31 +52,30 @@
     geography_df = eval(parse(text = paste0("db.censusnz::", df_name)))
 
     # Filter Data
-    relevant_hierarchies <- c(
+    relevant_hierarchies = c(
       "LANDWATER_NAME",
       colnames(geography_df %>% dplyr::select(dplyr::ends_with("_CODE") | dplyr::ends_with("_NAME")))
     )
 
-    land_type <- db.censusnz::area_hierarchy %>%
+    land_type = db.censusnz::area_hierarchy %>%
       dplyr::select(tidyselect::any_of(relevant_hierarchies)) %>% # renames
       dplyr::rename(land_type = LANDWATER_NAME) %>% # renames LANDWATER_NAME column to land_type
       dplyr::mutate(dplyr::across(tidyselect::vars_select_helpers$where(is.factor), as.character)) %>% # converts factor cols to character (note where is unexported)
       dplyr::distinct() %>% # carried over from previous code
-      #dplyr::arrange_at(relevant_hierarchies[relevant_hierarchies %in% colnames(db.censusnz::area_hierarchy)[-8]]) %>% # broken atm
       dplyr::group_by(dplyr::across(-tidyselect::starts_with("land_type"))) %>% # group by anything that's not land type
       dplyr::summarise(land_type = land_type[1], n_landtype = dplyr::n()) %>%
-      dplyr::mutate(land_type = dplyr::if_else(n_landtype > 1, "Mixture", land_type)) %>%
+      dplyr::mutate(land_type = dplyr::if_else(n_landtype > 1, "Mixture", land_type)) %>% # if multiple land types for same name, change type to mixture
       dplyr::select(-n_landtype) %>%
       dplyr::ungroup()
 
-    suppressMessages((
+    suppressMessages(
       result = geography_df %>%
         dplyr::filter(variable %in% variables) %>%
         dplyr::left_join(land_type) %>%
         dplyr::rename(geoid = dplyr::ends_with("_CODE")) %>%
         dplyr::rename(name = dplyr::ends_with("_NAME")) %>%
         dplyr::select(geoid, land_type, dplyr::everything())
-    ))
+    )
 
     return (result)
 }
@@ -78,8 +87,8 @@
 #'
 #' @examples
 #' get_variables()
-get_variables <- function() {
-    res = eval(parse(text = paste0("db.censusnz::", "available_variables")))
+get_variables = function() {
+    result = eval(parse(text = paste0("db.censusnz::", "available_variables")))
 
-    return(res)
+    return(result)
 }
