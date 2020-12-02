@@ -68,14 +68,14 @@ NULL
       dplyr::select(-n_landtype) %>%
       dplyr::ungroup()
 
-    suppressMessages(
+    suppressMessages((
       result = geography_df %>%
         dplyr::filter(variable %in% variables) %>%
         dplyr::left_join(land_type) %>%
         dplyr::rename(geoid = dplyr::ends_with("_CODE")) %>%
         dplyr::rename(name = dplyr::ends_with("_NAME")) %>%
         dplyr::select(geoid, land_type, dplyr::everything())
-    )
+    ))
 
     return (result)
 }
