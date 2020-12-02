@@ -6,7 +6,7 @@
 #' @examples
 #' get_variables()
 get_variables = function() {
-  result = eval(parse(text = paste0("db.censusnz::", "available_variables")))
+  result = db.censusnz::available_variables
 
   return(result)
 }
