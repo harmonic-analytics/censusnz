@@ -2,7 +2,7 @@
 #'
 #' @return The resulting dataframe for the requested geography, variables
 #'
-#' @param geography A string of the geographic area to be selected. Must be one of SA1, SA2, LBA, DHB, TA, RC
+#' @param geography A string of the geographic area to be selected. Must be one of SA1, SA2, LBA, DHB, TA, RC, WARD
 #' @param variables A string or character vector of the variables to be selected. Can use get_variables() to examine available variables
 #' @param year The year of data requested. Currently the only available year is 2018, which is the default
 #'
@@ -33,14 +33,14 @@ get_data <- function(geography=NULL, variables=NULL, year = 2018) {
   }
 
   # Make sure area type is one of the accepted types
-  types = c("SA1", "SA2", "LBA", "DHB", "TA", "RC")
-  assertthat::assert_that(geography %in% types, msg = "geography must be one of SA1, SA2, LBA, DHB, TA, RC")
+  types = c("SA1", "SA2", "LBA", "DHB", "TA", "RC", "WARD")
+  assertthat::assert_that(geography %in% types, msg = "geography must be one of SA1, SA2, LBA, DHB, TA, RC, WARD")
 
   # Construct the name of the required dataframe
-  df_name = geography
+  # df_name = geography
 
   # Gather the data and return it
-  geography_df = eval(parse(text = paste0("db.censusnz::", df_name)))
+  geography_df = censusnz::get_geography(geography)
 
   # Filter Data
   relevant_hierarchies = c(
@@ -69,4 +69,27 @@ get_data <- function(geography=NULL, variables=NULL, year = 2018) {
   ))
 
   return (result)
+}
+
+#' Get geography dataframe given input string
+#'
+#' @return The resulting dataframe for the requested geography, unedited from db.censusnz
+#'
+#' @param geography A string of the geographic area to be selected. Must be one of SA1, SA2, LBA, DHB, TA, RC, WARD
+#'
+#' @export
+#'
+#' @examples
+#' get_geography("SA1")
+get_geography = function(geography) {
+  result = switch(geography,
+                  "SA1" = db.censusnz::SA1,
+                  "SA2" = db.censusnz::SA2,
+                  "LBA" = db.censusnz::LBA,
+                  "DHB" = db.censusnz::DHB,
+                  "TA" = db.censusnz::TA,
+                  "RC" = db.censusnz::RC,
+                  "WARD" = db.censusnz::WARD
+                  )
+  return(result)
 }

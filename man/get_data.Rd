@@ -7,7 +7,7 @@
 get_data(geography = NULL, variables = NULL, year = 2018)
 }
 \arguments{
-\item{geography}{A string of the geographic area to be selected. Must be one of SA1, SA2, LBA, DHB, TA, RC}
+\item{geography}{A string of the geographic area to be selected. Must be one of SA1, SA2, LBA, DHB, TA, RC, WARD}
 
 \item{variables}{A string or character vector of the variables to be selected. Can use get_variables() to examine available variables}
 
