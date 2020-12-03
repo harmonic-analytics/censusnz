@@ -16,5 +16,5 @@ The resulting dataframe for the requested geography, unedited from db.censusnz
 Get geography dataframe given input string
 }
 \examples{
-get_geography("SA1")
+get_geography("RC")
 }

@@ -36,9 +36,6 @@ get_data <- function(geography=NULL, variables=NULL, year = 2018) {
   types = c("SA1", "SA2", "LBA", "DHB", "TA", "RC", "WARD")
   assertthat::assert_that(geography %in% types, msg = "geography must be one of SA1, SA2, LBA, DHB, TA, RC, WARD")
 
-  # Construct the name of the required dataframe
-  # df_name = geography
-
   # Gather the data and return it
   geography_df = censusnz::get_geography(geography)
 
@@ -80,7 +77,8 @@ get_data <- function(geography=NULL, variables=NULL, year = 2018) {
 #' @export
 #'
 #' @examples
-#' get_geography("SA1")
+#' get_geography("RC")
+
 get_geography = function(geography) {
   result = switch(geography,
                   "SA1" = db.censusnz::SA1,
