@@ -80,7 +80,7 @@ get_data <- function(geography=NULL, variables=NULL, year = 2018) {
 #' @export
 #'
 #' @examples
-#' get_geography("SA1")
+#' get_geography("RC")
 get_geography = function(geography) {
   result = switch(geography,
                   "SA1" = db.censusnz::SA1,
