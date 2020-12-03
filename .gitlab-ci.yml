@@ -37,4 +37,4 @@ coverage:
     GIT_STRATEGY: none
   script:
     - cd $PACKAGE_DIR
-    - R -e 'covr::package_coverage(type = c("tests", "examples"), quiet = FALSE)'
+    - R -e 'covr::package_coverage(type = c("tests"), quiet = FALSE)'
