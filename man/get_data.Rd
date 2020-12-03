@@ -20,5 +20,5 @@ The resulting dataframe for the requested geography, variables
 Get New Zealand census data
 }
 \examples{
-get_data("SA1", c("maori_descent", "smoking_status"))
+get_data("RC", c("maori_descent", "smoking_status"))
 }

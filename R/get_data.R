@@ -9,7 +9,7 @@
 #' @export
 #'
 #' @examples
-#' get_data("SA1", c("maori_descent", "smoking_status"))
+#' get_data("RC", c("maori_descent", "smoking_status"))
 
 get_data <- function(geography=NULL, variables=NULL, year = 2018) {
   geoid = NULL
