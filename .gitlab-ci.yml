@@ -1,0 +1,40 @@
+variables:
+  IMAGE_TAG: dreg.harmonic.co.nz:5000/harmonic/censusnz:$CI_PIPELINE_ID
+  PACKAGE_DIR: '/censusnz'
+
+stages:
+  - build
+  - checking
+  - testing
+
+build-docker-container:
+  stage: build
+  tags:
+      - shell
+      - dockerbuild
+      - wellington
+  script:
+    - docker build  --pull -t $IMAGE_TAG .
+    - docker push $IMAGE_TAG
+
+package-check:
+  stage: checking
+  tags:
+      - docker
+  image: $IMAGE_TAG
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - cd $PACKAGE_DIR
+    - R -e 'devtools::check()'
+
+coverage:
+  stage: testing
+  tags:
+      - docker
+  image: $IMAGE_TAG
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - cd $PACKAGE_DIR
+    - R -e 'covr::package_coverage(type = c("tests", "examples"), quiet = FALSE)'
