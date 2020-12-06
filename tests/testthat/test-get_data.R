@@ -10,9 +10,9 @@ test_that("get_data() errors on missing inputs", {
 })
 
 test_that("get_data() errors correctly on incorrect inputs", {
-  expect_silent(censusnz::get_data(geography = "RC", variables = c("maorii_descent", "smoking_status")))
-  expect_error(censusnz::get_data(geography = "RC", variables = c("maorii_descent", "smokiing_status")))
-  expect_error(censusnz::get_data(geography = "RRCC", variables = c("maori_descent", "smoking_status")))
+  expect_error(censusnz::get_data(geography = "RC", variables = c("maorii_descent", "smoking_status")), "At least one of the provided variables is not valid, see censusnz::get_variables()")
+  expect_error(censusnz::get_data(geography = "RC", variables = c("maorii_descent", "smokiing_status")), "At least one of the provided variables is not valid, see censusnz::get_variables()")
+  expect_error(censusnz::get_data(geography = "RRCC", variables = c("maori_descent", "smoking_status")),"geography must be one of SA1, SA2, LBA, DHB, TA, RC, WARD")
 })
 
 test_that("get_data() works on incorrectly capitalised correct inputs", {

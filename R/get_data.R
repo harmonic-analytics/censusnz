@@ -28,9 +28,13 @@ get_data <- function(geography=NULL, variables=NULL, year = 2018) {
 
   # Cast area_type to uppercase
   geography = toupper(geography)
-  if(!is.null(variables)){
-    variables <- match.arg(tolower(variables), unique(db.censusnz::available_variables$variable), several.ok = TRUE)
-  }
+
+  # Check provided variables are valid
+  avail_vars = db.censusnz::available_variables$variable
+  assertthat::assert_that(all(tolower(variables) %in% avail_vars), msg = "At least one of the provided variables is not valid, see censusnz::get_variables()")
+
+  # Cast variables to lower
+  variables = match.arg(tolower(variables), unique(avail_vars), several.ok = TRUE)
 
   # Make sure area type is one of the accepted types
   types = c("SA1", "SA2", "LBA", "DHB", "TA", "RC", "WARD")
@@ -45,6 +49,7 @@ get_data <- function(geography=NULL, variables=NULL, year = 2018) {
     colnames(geography_df %>% dplyr::select(dplyr::ends_with("_CODE") | dplyr::ends_with("_NAME")))
   )
 
+  # Process data to provide useful land_type column
   land_type = db.censusnz::area_hierarchy %>%
     dplyr::select(tidyselect::any_of(relevant_hierarchies)) %>% # renames
     dplyr::rename(land_type = LANDWATER_NAME) %>% # renames LANDWATER_NAME column to land_type
