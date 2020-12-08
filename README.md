@@ -10,8 +10,6 @@
 report](https://gitlab.harmonic.co.nz/harmonic/packages/censusnz/badges/master/coverage.svg)](https://gitlab.harmonic.co.nz/harmonic/packages/censusnz/commits/master)
 <!-- badges: end -->
 
-# Overview
-
 This package provides an interface to the NZ Census data, returning
 tidyverse-ready data frames.
 
