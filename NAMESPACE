@@ -2,6 +2,6 @@
 
 export("%>%")
 export(get_data)
-export(get_geography)
 export(get_variables)
+export(plot_data)
 importFrom(magrittr,"%>%")

@@ -11,7 +11,7 @@
 #' @examples
 #' get_data("RC", c("maori_descent", "smoking_status"))
 
-get_data <- function(geography=NULL, variables=NULL, year = 2018) {
+get_data = function(geography=NULL, variables=NULL, year = 2018) {
   geoid = NULL
   LANDWATER_NAME = NULL
   variable = NULL
@@ -34,14 +34,13 @@ get_data <- function(geography=NULL, variables=NULL, year = 2018) {
   assertthat::assert_that(all(tolower(variables) %in% avail_vars), msg = "At least one of the provided variables is not valid, see censusnz::get_variables()")
 
   # Cast variables to lower
-  variables = match.arg(tolower(variables), unique(avail_vars), several.ok = TRUE)
+  if(!is.null(variables)){
+    variables = match.arg(tolower(variables), unique(db.censusnz::available_variables$variable), several.ok = TRUE)
+  }
 
-  # Make sure area type is one of the accepted types
-  types = c("SA1", "SA2", "LBA", "DHB", "TA", "RC", "WARD")
-  assertthat::assert_that(geography %in% types, msg = "geography must be one of SA1, SA2, LBA, DHB, TA, RC, WARD")
 
   # Gather the data and return it
-  geography_df = censusnz::get_geography(geography)
+  geography_df = get_geography(geography)
 
   # Filter Data
   relevant_hierarchies = c(
@@ -61,14 +60,28 @@ get_data <- function(geography=NULL, variables=NULL, year = 2018) {
     dplyr::select(-n_landtype) %>%
     dplyr::ungroup()
 
-  suppressMessages((
-    result = geography_df %>%
-      dplyr::filter(variable %in% variables) %>%
-      dplyr::left_join(land_type) %>%
-      dplyr::rename(geoid = dplyr::ends_with("_CODE")) %>%
-      dplyr::rename(name = dplyr::ends_with("_NAME")) %>%
-      dplyr::select(geoid, land_type, dplyr::everything())
-  ))
+  # if geography has no relevant hierarchies, our land_type is not useful, mutate to keep shape and col names consistent
+  if(nrow(land_type)==1){
+    suppressMessages((
+      result = geography_df %>%
+        dplyr::filter(variable %in% variables) %>%
+        dplyr::mutate(land_type=land_type[[1]]) %>%
+        dplyr::rename(geoid = dplyr::ends_with("_CODE")) %>%
+        dplyr::rename(name = dplyr::ends_with("_NAME")) %>%
+        dplyr::select(geoid, land_type, dplyr::everything())
+    ))
+  }
+  # else we use a left join to get useful land_type values
+  else{
+    suppressMessages((
+      result = geography_df %>%
+        dplyr::filter(variable %in% variables) %>%
+        dplyr::left_join(land_type) %>%
+        dplyr::rename(geoid = dplyr::ends_with("_CODE")) %>%
+        dplyr::rename(name = dplyr::ends_with("_NAME")) %>%
+        dplyr::select(geoid, land_type, dplyr::everything())
+    ))
+  }
 
   return (result)
 }
@@ -76,15 +89,14 @@ get_data <- function(geography=NULL, variables=NULL, year = 2018) {
 #' Get geography dataframe given input string
 #'
 #' @return The resulting dataframe for the requested geography, unedited from db.censusnz
-#'
 #' @param geography A string of the geographic area to be selected. Must be one of SA1, SA2, LBA, DHB, TA, RC, WARD
-#'
-#' @export
-#'
-#' @examples
-#' get_geography("RC")
-
+#' @noRd
 get_geography = function(geography) {
+
+  # Make sure area type is one of the accepted types
+  types = c("SA1", "SA2", "LBA", "DHB", "TA", "RC", "WARD")
+  assertthat::assert_that(geography %in% types, msg = paste("geography must be one of:", paste(types, collapse = ', ')))
+
   result = switch(geography,
                   "SA1" = db.censusnz::SA1,
                   "SA2" = db.censusnz::SA2,
