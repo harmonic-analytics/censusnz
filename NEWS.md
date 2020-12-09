@@ -1,3 +1,8 @@
+# censusnz 0.1.0.9000
+
+* Added a `plot_data()` function which takes drop-in arguments from `get_data` and some extra arguments
+* Tweaked how `get_data()` deals with land_type labels
+
 # censusnz 0.0.0.9000
 
 * Added a `NEWS.md` file to track changes to the package.

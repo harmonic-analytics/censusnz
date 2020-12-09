@@ -38,7 +38,6 @@ get_data = function(geography=NULL, variables=NULL, year = 2018) {
     variables = match.arg(tolower(variables), unique(db.censusnz::available_variables$variable), several.ok = TRUE)
   }
 
-
   # Gather the data and return it
   geography_df = get_geography(geography)
 
@@ -48,20 +47,10 @@ get_data = function(geography=NULL, variables=NULL, year = 2018) {
     colnames(geography_df %>% dplyr::select(dplyr::ends_with("_CODE") | dplyr::ends_with("_NAME")))
   )
 
-  # Process data to provide useful land_type column
-  land_type = db.censusnz::area_hierarchy %>%
-    dplyr::select(tidyselect::any_of(relevant_hierarchies)) %>% # renames
-    dplyr::rename(land_type = LANDWATER_NAME) %>% # renames LANDWATER_NAME column to land_type
-    dplyr::mutate(dplyr::across(tidyselect::vars_select_helpers$where(is.factor), as.character)) %>% # converts factor cols to character (note where is unexported)
-    dplyr::distinct() %>% # carried over from previous code
-    dplyr::group_by(dplyr::across(-tidyselect::starts_with("land_type"))) %>% # group by anything that's not land type
-    dplyr::summarise(land_type = land_type[1], n_landtype = dplyr::n()) %>%
-    dplyr::mutate(land_type = dplyr::if_else(n_landtype > 1, "Mixture", land_type)) %>% # if multiple land types for same name, change type to mixture
-    dplyr::select(-n_landtype) %>%
-    dplyr::ungroup()
+  # If there is no land type info available, set land_type column to NA
+  if(sum(relevant_hierarchies %in% colnames(db.censusnz::area_hierarchy))==1){
+    land_type = NA
 
-  # if geography has no relevant hierarchies, our land_type is not useful, mutate to keep shape and col names consistent
-  if(nrow(land_type)==1){
     suppressMessages((
       result = geography_df %>%
         dplyr::filter(variable %in% variables) %>%
@@ -71,8 +60,19 @@ get_data = function(geography=NULL, variables=NULL, year = 2018) {
         dplyr::select(geoid, land_type, dplyr::everything())
     ))
   }
-  # else we use a left join to get useful land_type values
   else{
+    # Process data to provide useful land_type column
+    land_type = db.censusnz::area_hierarchy %>%
+      dplyr::select(tidyselect::any_of(relevant_hierarchies)) %>% # renames
+      dplyr::rename(land_type = LANDWATER_NAME) %>% # renames LANDWATER_NAME column to land_type
+      dplyr::mutate(dplyr::across(tidyselect::vars_select_helpers$where(is.factor), as.character)) %>% # converts factor cols to character (note where is unexported)
+      dplyr::distinct() %>% # carried over from previous code
+      dplyr::group_by(dplyr::across(-tidyselect::starts_with("land_type"))) %>% # group by anything that's not land type
+      dplyr::summarise(land_type = land_type[1], n_landtype = dplyr::n()) %>%
+      dplyr::mutate(land_type = dplyr::if_else(n_landtype > 1, "Mixture", land_type)) %>% # if multiple land types for same name, change type to mixture
+      dplyr::select(-n_landtype) %>%
+      dplyr::ungroup()
+
     suppressMessages((
       result = geography_df %>%
         dplyr::filter(variable %in% variables) %>%

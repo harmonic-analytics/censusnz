@@ -4,7 +4,14 @@
 \alias{plot_data}
 \title{Plot New Zealand census data}
 \usage{
-plot_data(geography = NULL, variables = NULL, year = 2018)
+plot_data(
+  geography = NULL,
+  variables = NULL,
+  year = 2018,
+  n = 6,
+  exclude_total = TRUE,
+  exclude_other = TRUE
+)
 }
 \arguments{
 \item{geography}{A string of the geographic area to be selected. Must be one of SA1, SA2, LBA, DHB, TA, RC, WARD}
@@ -12,6 +19,12 @@ plot_data(geography = NULL, variables = NULL, year = 2018)
 \item{variables}{A string or character vector of the variables to be selected. Can use get_variables() to examine available variables}
 
 \item{year}{The year of data requested. Currently the only available year is 2018, which is the default}
+
+\item{n}{The number of areas to use as faceted plots}
+
+\item{exclude_total}{Whether or not to exclude any data with name label containing the substring "Total"}
+
+\item{exclude_other}{Whether or not to exclude the 'Other' column after data has been lumped}
 }
 \value{
 A ggplot object containing a plot of each variable, for each geographic
