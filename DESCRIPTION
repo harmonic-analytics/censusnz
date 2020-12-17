@@ -19,7 +19,10 @@ Imports:
     tibble,
     tidyselect,
     ggplot2,
-    forcats
+    forcats,
+    viridis,
+    pkgload,
+    stringr
 Remotes:
   harmonic-analytics/db-censusnz
 RoxygenNote: 7.1.1
