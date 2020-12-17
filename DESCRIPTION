@@ -24,4 +24,7 @@ Remotes:
   harmonic-analytics/db-censusnz
 RoxygenNote: 7.1.1
 Suggests: 
-    testthat
+    testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

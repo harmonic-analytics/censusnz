@@ -1,0 +1,117 @@
+---
+title: "Example 01"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Example 01}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This example demonstrates the functions `get_variables`, `get_data` and
+`plot_data` which are included in `censusnz`.
+
+```{r, include = FALSE}
+pkgload::load_all(export_all=FALSE, helpers=FALSE)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(censusnz)
+```
+
+Let's say we want to investigate smoking and employment statistics, but we
+aren't sure which geographical level to investigate at. We can begin by using 
+`get_variables` to check what variables are available, and to take note of their
+exact names.
+
+```{r}
+vars <- get_variables()
+relevant_vars <- vars %>% 
+  dplyr::filter(grepl("employment", variable, fixed = TRUE) |
+                  grepl("smoking", variable, fixed = TRUE))
+relevant_vars
+```
+
+It seems we have variables `status_in_employment` and `smoking_status` as
+expected, and we have these variables for a range of geographical levels. To
+select a geographical level, consider the breakdown of their relationships from
+Stats NZ.
+
+![Source: Stats NZ and licensed by Stats NZ for reuse under the Creative Commons Attribution 4.0 International licence.](../man/figures/geography_breakdown.png){width=100%}
+
+We can also compare with the codes for the available regions.
+
+```{r}
+vars$geography %>% unique()
+```
+
+We can match most of these with their respective blocks on the diagram. Let's
+say we are interested in the most general geographical level available, `SA1`.
+We construct our first call to `get_data()`.
+
+```{r cache = TRUE}
+my_data <- get_data(geography = "SA1",
+                    variables = c("status_in_employment", "smoking_status"))
+my_data
+```
+
+This is our first look at an output from `get_data()`. We have the columns we
+would expect, such as `variable` and `count`, as well as `variable_group` which 
+describes various groupings of individuals by their answers to census questions.
+We also have some extra columns:
+
+|Variable|Description|
+|-|------|
+|`geoid`|A unique ID for the geographical unit based on the area hierarchy|
+|`land_type`|The land type, e.g. "Mainland", "Inlet", "Island", "Mixture"|
+|`name`|A name for the geographical unit if available. More informative at lower levels|
+
+In this case `SA1` units do not have informative names so the `geoid` and `name`
+columns are identical.
+
+Maybe we try plotting the data by `RC` unit, for Regional Councils.
+
+```{r fig.align = 'center', fig.height = 7, fig.width = 7}
+plot_data(geography = "RC", variables = c("status_in_employment", "smoking_status"))
+```
+
+By default this plots the 6 regions with the highest count. However, `plot_data`
+has additional arguments to customise this output. For example:
+```{r fig.align = 'center', fig.height =7, fig.width = 7}
+plot_data(geography = "RC",
+          variables = c("status_in_employment", "smoking_status"),
+          n = 3,
+          exclude_other = FALSE,
+          exclude_total = FALSE)
+
+```
+
+`exclude_total` removes the Total NZ category if it exists and `exclude_other` 
+ignores lumping of categories into "other". When we set `exclude_other` and
+`exclude_total` to FALSE, we now have these extra categories included in our output.
+
+With these set to FALSE we can see that Total NZ has the highest counts, which
+is expected. Auckland Region is the largest single region by count, and 'Other'
+encompasses all remaining regions. The counts for Auckland and Other should add
+to the same as Total NZ.
+
+From this output, we can make several observations about individuals 15 years and over:
+
+* Most individuals have never smoked
+* There are slightly more ex-smokers than regular smokers
+* The vast majority of individuals are employed
+* More individuals are self-employed without employees than are employers
+* There are relatively very small numbers of individuals who are unpaid family workers or not elsewhere included
+
+We can investigate this final point further:
+
+```{r}
+my_data_RC <- get_data(geography = "RC", variables = "status_in_employment")
+vargroup_summary <- my_data_RC[my_data_RC$name == "Total NZ (Regional Council)", c("variable_group", "count")] %>%
+  dplyr::group_by(variable_group) %>% 
+  dplyr::summarise(n = sum(count), .groups = "drop_last")
+vargroup_summary[order(vargroup_summary$n),]
+```

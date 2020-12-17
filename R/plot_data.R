@@ -25,6 +25,9 @@ plot_data = function(geography=NULL, variables=NULL, year = 2018, n = 6, exclude
 
   if(exclude_total){data=data %>% dplyr::filter(!grepl("Total", name, fixed=TRUE))}
 
+  # remove total curp
+  data = data %>% dplyr::filter(!grepl("total", variable_group, fixed = TRUE))
+
   data$name = as.factor(data$name)
 
   # based on https://stackoverflow.com/questions/41963053/r-stacked-bar-charts-including-other-using-ggplot2
@@ -35,8 +38,15 @@ plot_data = function(geography=NULL, variables=NULL, year = 2018, n = 6, exclude
 
   if(exclude_other){data=data %>% dplyr::filter(!grepl("Other", name, fixed=TRUE))}
 
-  result = data %>% ggplot2::ggplot(ggplot2::aes(x=variable, y=count, fill=variable_group)) +
+  result = data %>% ggplot2::ggplot(ggplot2::aes(x=variable,
+                                                 y=count,
+                                                 fill=stringr::str_replace_all(variable_group, paste0("(.{20})"), "\\1\n"))) +
     ggplot2::geom_col() +
-    ggplot2::facet_wrap(~forcats::fct_reorder(name, count))
+    ggplot2::facet_wrap(~forcats::fct_reorder(name, count)) +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
+                   legend.position = "bottom",
+                   legend.title = ggplot2::element_blank()) +
+    ggplot2::guides(fill = ggplot2::guide_legend(nrow = 3)) +
+    viridis::scale_fill_viridis(discrete = TRUE)
   return(result)
 }
