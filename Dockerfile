@@ -1,6 +1,8 @@
 FROM rocker/tidyverse
 
-RUN apt-get update -qq && apt-get install -y --no-install-recommends libxt6 \
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+  libxt6 \
+  qpdf \
   && apt-get clean
 
 WORKDIR /censusnz
