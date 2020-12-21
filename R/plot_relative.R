@@ -36,6 +36,13 @@ plot_relative = function(geography = NULL,
                          exclude_total = TRUE,
                          exclude_other = TRUE) {
 
+  count = NULL
+  name = NULL
+  variable_group = NULL
+  total = NULL
+  variable = NULL
+  prop = NULL
+
   # fetch data and remove NAs
   data = censusnz::get_data(geography, variables, year) %>%
     dplyr::filter(!is.na(count))
