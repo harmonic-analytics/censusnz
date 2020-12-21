@@ -5,6 +5,7 @@
 #'
 #' @param geography A string of the geographic area to be selected. Must be one of SA1, SA2, LBA, DHB, TA, RC, WARD
 #' @param variables A string or character vector of the variables to be selected. Can use get_variables() to examine available variables
+#' @param regions A string or vector of the regions to be selected
 #' @param year The year of data requested. Currently the only available year is 2018, which is the default
 #' @param n The number of areas to use as faceted plots
 #' @param exclude_total Whether or not to exclude any data with name label containing the substring "Total"
@@ -17,6 +18,7 @@
 
 plot_data = function(geography = NULL,
                      variables = NULL,
+                     regions = NULL,
                      year = 2018,
                      n = 6,
                      exclude_total = TRUE,
@@ -37,12 +39,16 @@ plot_data = function(geography = NULL,
 
   data$name = as.factor(data$name)
 
-  # based on https://stackoverflow.com/questions/41963053/r-stacked-bar-charts-including-other-using-ggplot2
-  # a bit slow
-  tidy_df = data[rep(rownames(data), times = data$count), 3] # slow
-  top_n = tidy_df$name %>% forcats::fct_lump_n(n-1+exclude_other) %>% table()
-  data$name = as.character(data$name)
-  data$name[!(data$name %in% names(top_n))] = "Other"
+  if(!is.null(regions)) {
+    data = dplyr::filter(data, name %in% regions)
+  } else {
+    # based on https://stackoverflow.com/questions/41963053/r-stacked-bar-charts-including-other-using-ggplot2
+    # a bit slow
+    tidy_df = data[rep(rownames(data), times = data$count), 3] # slow
+    top_n = tidy_df$name %>% forcats::fct_lump_n(n-1+exclude_other) %>% table()
+    data$name = as.character(data$name)
+    data$name[!(data$name %in% names(top_n))] = "Other"
+  }
 
   # remove our 'other' category if desired, for scale reasons
   if(exclude_other){data=data %>% dplyr::filter(!grepl("Other", name, fixed=TRUE))}

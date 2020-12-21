@@ -55,6 +55,7 @@ plot_relative = function(geography = NULL,
     dplyr::select(c("variable_group", "prop"))
 
   plot_data = data
+  # if desired, remove Total NZ names at this point
   if(exclude_total == TRUE) {
     plot_data = dplyr::filter(plot_data, !grepl("Total", name, fixed = TRUE))
   }
@@ -63,13 +64,15 @@ plot_relative = function(geography = NULL,
     # select only desired regions
     plot_data = dplyr::filter(plot_data, name %in% regions)
   } else {
+    # or plot the top n regions by count, naming the rest "Other"
     tidy_df = plot_data[rep(rownames(plot_data), times = plot_data$count), 3] # slow
     top_n = tidy_df$name %>% forcats::fct_lump_n(n-1+exclude_other) %>% table()
     plot_data$name = as.character(plot_data$name)
     plot_data$name[!(plot_data$name %in% names(top_n))] = "Other"
 
     # remove our 'other' category if desired, for scale reasons
-    if(exclude_other){plot_data=plot_data %>% dplyr::filter(!grepl("Other", name, fixed=TRUE))}
+    if(exclude_other){
+      plot_data = dplyr::filter(plot_data, !grepl("Other", name, fixed=TRUE))}
   }
 
   # remove 'total * curp' names and groups
@@ -81,16 +84,14 @@ plot_relative = function(geography = NULL,
     dplyr::group_by(name) %>%
     dplyr::summarise(total = sum(count), .groups = "drop_last")
 
+  # join the total counts per name to plot_data
   plot_data_props = plot_data %>%
     dplyr::left_join(plot_summaries, by = "name") %>%
     dplyr::mutate(prop = count / total)
   result = ggplot2::ggplot(plot_data_props,
                            ggplot2::aes(fill = stringr::str_replace_all(
-                             variable_group,
-                             paste0("(.{20})"),
-                             "\\1\n"),
-                             x = variable,
-                             y = prop)) +
+                             variable_group, paste0("(.{20})"),"\\1\n"),
+                             x = variable, y = prop)) +
     ggplot2::geom_bar(stat = "identity", position=position) +
     ggplot2::facet_wrap(~name) +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
