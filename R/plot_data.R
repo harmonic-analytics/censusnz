@@ -15,32 +15,44 @@
 #' @examples
 #' plot_data("RC", c("maori_descent", "smoking_status"))
 
-plot_data = function(geography=NULL, variables=NULL, year = 2018, n = 6, exclude_total=TRUE, exclude_other=TRUE) {
+plot_data = function(geography = NULL,
+                     variables = NULL,
+                     year = 2018,
+                     n = 6,
+                     exclude_total = TRUE,
+                     exclude_other = TRUE) {
   variable=NULL
   count=NULL
   variable_group=NULL
   name=NULL
 
+  # fetch data and remove NAs
   data = censusnz::get_data(geography, variables, year) %>% dplyr::filter(!is.na(count))
 
+  # remove the 'Total NZ' column as it is unhelpful for scale comparison
   if(exclude_total){data=data %>% dplyr::filter(!grepl("Total", name, fixed=TRUE))}
 
-  # remove total curp
+  # remove total_curp and total_stated_curp as they are redundant and unhelpful
   data = data %>% dplyr::filter(!grepl("total", variable_group, fixed = TRUE))
 
   data$name = as.factor(data$name)
 
   # based on https://stackoverflow.com/questions/41963053/r-stacked-bar-charts-including-other-using-ggplot2
+  # a bit slow
   tidy_df = data[rep(rownames(data), times = data$count), 3] # slow
   top_n = tidy_df$name %>% forcats::fct_lump_n(n-1+exclude_other) %>% table()
   data$name = as.character(data$name)
   data$name[!(data$name %in% names(top_n))] = "Other"
 
+  # remove our 'other' category if desired, for scale reasons
   if(exclude_other){data=data %>% dplyr::filter(!grepl("Other", name, fixed=TRUE))}
 
-  result = data %>% ggplot2::ggplot(ggplot2::aes(x=variable,
-                                                 y=count,
-                                                 fill=stringr::str_replace_all(variable_group, paste0("(.{20})"), "\\1\n"))) +
+  # plot graph, wrap legend labels and put legend below for visibility
+  result = data %>%
+    ggplot2::ggplot(ggplot2::aes(x = variable,
+                                 y = count,
+                                 fill = stringr::str_replace_all(
+                                   variable_group, paste0("(.{20})"), "\\1\n"))) +
     ggplot2::geom_col() +
     ggplot2::facet_wrap(~forcats::fct_reorder(name, count)) +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),

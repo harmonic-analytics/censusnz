@@ -52,7 +52,7 @@ We can match most of these with their respective blocks on the diagram. Let's
 say we are interested in the most general geographical level available, `SA1`.
 We construct our first call to `get_data()`.
 
-```{r cache = TRUE}
+```{r}
 my_data <- get_data(geography = "SA1",
                     variables = c("status_in_employment", "smoking_status"))
 my_data
@@ -80,6 +80,7 @@ plot_data(geography = "RC", variables = c("status_in_employment", "smoking_statu
 
 By default this plots the 6 regions with the highest count. However, `plot_data`
 has additional arguments to customise this output. For example:
+
 ```{r fig.align = 'center', fig.height =7, fig.width = 7}
 plot_data(geography = "RC",
           variables = c("status_in_employment", "smoking_status"),
@@ -115,3 +116,19 @@ vargroup_summary <- my_data_RC[my_data_RC$name == "Total NZ (Regional Council)",
   dplyr::summarise(n = sum(count), .groups = "drop_last")
 vargroup_summary[order(vargroup_summary$n),]
 ```
+
+It also might pay to investigate by proportion, in which case we can use the `plot_relative()` function.
+
+```{r fig.align = 'center', fig.height =7, fig.width = 7}
+plot_relative(geography = "RC",
+              variables = c("status_in_employment", "smoking_status"),
+              n = 4,
+              position = "fill",
+              exclude_other = TRUE,
+              exclude_total = FALSE)
+```
+
+This allows us to better observe relative differences between regions. For
+example, we can see that Auckland region has more individuals who have never
+smoked than the Total NZ average, and Wellington has a relatively smaller
+proportion of employers.
