@@ -43,12 +43,10 @@ To install this package from gitlab, you must first generate a Personal Access T
 remotes::install_gitlab(repo = 'harmonic/packages/censusnz', auth_token = <PAT>, host = 'gitlab.harmonic.co.nz')
 ```
 
-## Example
+## Examples
 
-A basic call to get_data() for a particular geography and variables:
-
-```{r example}
-library(censusnz)
-
-get_data("RC", c("maori_descent", "smoking_status")) %>% head()
+The package includes a vignettes detailing the use of the provided functions.
+  To view this vignette run the following after installing the package:
+```{r eval = FALSE}
+vignette("example_01", package = "censusnz")
 ```

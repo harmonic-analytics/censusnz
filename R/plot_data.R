@@ -1,5 +1,12 @@
 #' Plot New Zealand census data
 #'
+#' This function provides a drop-in replacement for `censusnz::get_data` that
+#'   allows helpful graphs of the census data to be conveniently plotted. By
+#'   default the function plots the 6 regions with the highest number of
+#'   observations, excluding 'NZ Total' and 'Other' categories. Configuration of
+#'   the number of regions as well as whether to exclude the total and other
+#'   categories is possible.
+#'
 #' @return A ggplot object containing a plot of each variable, for each geographic
 #' region name, coloured by variable group, from 2018 NZ census data.
 #'
@@ -14,7 +21,18 @@
 #' @export
 #'
 #' @examples
+#' # Multiple variables with defaults
+#' \dontrun{
 #' plot_data("RC", c("maori_descent", "smoking_status"))
+#' }
+#' # Customising the layout and exclusions
+#' \dontrun{
+#' plot_data("RC",
+#'           "maori_descent",
+#'           n = 3,
+#'           exclude_total = FALSE,
+#'           exclude_other = FALSE)
+#' }
 
 plot_data = function(geography = NULL,
                      variables = NULL,
@@ -50,7 +68,7 @@ plot_data = function(geography = NULL,
     data$name[!(data$name %in% names(top_n))] = "Other"
   }
 
-  # remove our 'other' category if desired, for scale reasons
+  # remove our 'other' category if desired, likely for scale reasons
   if(exclude_other){data=data %>% dplyr::filter(!grepl("Other", name, fixed=TRUE))}
 
   # plot graph, wrap legend labels and put legend below for visibility

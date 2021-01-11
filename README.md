@@ -36,21 +36,12 @@ package:
 remotes::install_gitlab(repo = 'harmonic/packages/censusnz', auth_token = <PAT>, host = 'gitlab.harmonic.co.nz')
 ```
 
-## Example
+## Examples
 
-A basic call to get\_data() for a particular geography and variables:
+The package includes a vignettes detailing the use of the provided
+functions. To view this vignette run the following after installing the
+package:
 
 ``` r
-library(censusnz)
-
-get_data("RC", c("maori_descent", "smoking_status")) %>% head()
-#> # A tibble: 6 x 6
-#>   geoid land_type name           variable     variable_group               count
-#>   <chr> <chr>     <chr>          <chr>        <chr>                        <dbl>
-#> 1 01    Mixture   Northland Reg~ maori_desce~ 01_maori_descent_curp        69225
-#> 2 01    Mixture   Northland Reg~ maori_desce~ 02_no_maori_descent_curp    104586
-#> 3 01    Mixture   Northland Reg~ maori_desce~ 04_dont_know_curp             5268
-#> 4 01    Mixture   Northland Reg~ maori_desce~ total_stated_curp           179076
-#> 5 01    Mixture   Northland Reg~ maori_desce~ 99_not_elsewhere_included_~      0
-#> 6 01    Mixture   Northland Reg~ maori_desce~ total_curp                  179076
+vignette("Example 01", package = "censusnz")
 ```

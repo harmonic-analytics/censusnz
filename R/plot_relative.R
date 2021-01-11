@@ -2,11 +2,13 @@
 #'
 #' This function will plot the relative levels of certain variables for several
 #'   named regions. By default this will take the top 6 regions, excluding total
-#'   NZ or other summary groups. It can also be configured
+#'   NZ or other summary groups. Several parameters can be configured including
+#'   the position of the bars and the number of regions to plot.
 #'
-#' @return A ggplot object containing a plot of each variable, for each
-#'   geographic region name, coloured by variable group, from 2018 NZ census
-#'   data.
+#' Plotting proportions relative to other levels often provides much more
+#'   intuitive or useful information as it allows quick comparison of a region
+#'   to other regions or to the average, while avoiding scale issues created by
+#'   few regions having large numbers of observations.
 #'
 #' @param geography A string of the geographic area to be selected. Must be one
 #'   of SA1, SA2, LBA, DHB, TA, RC, WARD
@@ -22,10 +24,24 @@
 #' @param exclude_other Whether or not to exclude the 'Other' column after data
 #'   has been lumped
 #'
+#' @return A ggplot object containing a plot of each variable, for each
+#'   geographic region name, coloured by variable group, from 2018 NZ census
+#'   data.
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' plot_data("RC", c("maori_descent", "smoking_status"))
+#' }
+#' # Customising the layout and exclusions
+#' \dontrun{
+#' plot_relative("RC",
+#'           "maori_descent",
+#'           n = 3,
+#'           position = "dodge",
+#'           exclude_total = FALSE,
+#'           exclude_other = FALSE)
+#' }
 
 plot_relative = function(geography = NULL,
                          variables = NULL,

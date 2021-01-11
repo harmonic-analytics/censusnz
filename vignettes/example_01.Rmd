@@ -2,12 +2,12 @@
 title: "Example 01"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Example 01}
+  %\VignetteIndexEntry{example 01}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-    This example demonstrates the functions `get_variables`, `get_data` and
+This example demonstrates the functions `get_variables`, `get_data` and
 `plot_data` which are included in `censusnz`.
 
 ```{r, include = FALSE}
@@ -39,6 +39,10 @@ It seems we have variables `status_in_employment` and `smoking_status` as
 expected, and we have these variables for a range of geographical levels. To
 select a geographical level, consider the breakdown of their relationships from
 Stats NZ.
+
+```{r, echo = FALSE, out.width = '100%'}
+knitr::include_graphics(paste0(getwd(), '/../man/figures/geography_breakdown.png'))
+```
 
 ![Source: Stats NZ and licensed by Stats NZ for reuse under the Creative Commons Attribution 4.0 International licence.](../man/figures/geography_breakdown.png){width=100%}
 
