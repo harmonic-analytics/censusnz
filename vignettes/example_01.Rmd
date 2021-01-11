@@ -7,7 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-This example demonstrates the functions `get_variables`, `get_data` and
+    This example demonstrates the functions `get_variables`, `get_data` and
 `plot_data` which are included in `censusnz`.
 
 ```{r, include = FALSE}
@@ -72,7 +72,7 @@ We also have some extra columns:
 In this case `SA1` units do not have informative names so the `geoid` and `name`
 columns are identical.
 
-Maybe we try plotting the data by `RC` unit, for Regional Councils.
+Maybe instead of `SA1`, we try plotting the data by `RC` unit, for Regional Councils.
 
 ```{r fig.align = 'center', fig.height = 7, fig.width = 7}
 plot_data(geography = "RC", variables = c("status_in_employment", "smoking_status"))
@@ -87,7 +87,6 @@ plot_data(geography = "RC",
           n = 3,
           exclude_other = FALSE,
           exclude_total = FALSE)
-
 ```
 
 `exclude_total` removes the Total NZ category if it exists and `exclude_other` 
@@ -126,9 +125,15 @@ plot_relative(geography = "RC",
               position = "fill",
               exclude_other = TRUE,
               exclude_total = FALSE)
+plot_relative(geography = "RC",
+              variables = c("status_in_employment", "smoking_status"),
+              n = 4,
+              position = "dodge",
+              exclude_other = TRUE,
+              exclude_total = FALSE)
 ```
 
 This allows us to better observe relative differences between regions. For
-example, we can see that Auckland region has more individuals who have never
-smoked than the Total NZ average, and Wellington has a relatively smaller
-proportion of employers.
+example, we can see that Auckland region has a higher proportion of individuals
+who have never smoked than the Total NZ average, and Wellington has a relatively
+smaller proportion of employers than average.
