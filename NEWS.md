@@ -1,3 +1,8 @@
+# censusnz 0.2.0.9000
+
+* Added `plot_relative()` to plot proportions for easier comparison between regions
+* Added a vignette demonstrating the features of the package
+
 # censusnz 0.1.0.9000
 
 * Added a `plot_data()` function which takes drop-in arguments from `get_data` and some extra arguments
