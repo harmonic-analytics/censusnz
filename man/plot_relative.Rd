@@ -9,7 +9,7 @@ plot_relative(
   variables = NULL,
   regions = NULL,
   year = 2018,
-  n = 2,
+  n = 6,
   position = "fill",
   exclude_total = TRUE,
   exclude_other = TRUE
@@ -55,16 +55,12 @@ Plotting proportions relative to other levels often provides much more
   few regions having large numbers of observations.
 }
 \examples{
-\dontrun{
 plot_data("RC", c("maori_descent", "smoking_status"))
-}
 # Customising the layout and exclusions
-\dontrun{
 plot_relative("RC",
           "maori_descent",
           n = 3,
           position = "dodge",
           exclude_total = FALSE,
           exclude_other = FALSE)
-}
 }

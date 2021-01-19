@@ -43,15 +43,11 @@ This function provides a drop-in replacement for `censusnz::get_data` that
 }
 \examples{
 # Multiple variables with defaults
-\dontrun{
 plot_data("RC", c("maori_descent", "smoking_status"))
-}
 # Customising the layout and exclusions
-\dontrun{
 plot_data("RC",
           "maori_descent",
           n = 3,
           exclude_total = FALSE,
           exclude_other = FALSE)
-}
 }

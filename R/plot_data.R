@@ -22,17 +22,13 @@
 #'
 #' @examples
 #' # Multiple variables with defaults
-#' \dontrun{
 #' plot_data("RC", c("maori_descent", "smoking_status"))
-#' }
 #' # Customising the layout and exclusions
-#' \dontrun{
 #' plot_data("RC",
 #'           "maori_descent",
 #'           n = 3,
 #'           exclude_total = FALSE,
 #'           exclude_other = FALSE)
-#' }
 
 plot_data = function(geography = NULL,
                      variables = NULL,
@@ -45,28 +41,24 @@ plot_data = function(geography = NULL,
   count=NULL
   variable_group=NULL
   name=NULL
-
   # fetch data and remove NAs
   data = censusnz::get_data(geography, variables, year) %>% dplyr::filter(!is.na(count))
 
   # remove the 'Total NZ' column as it is unhelpful for scale comparison
   if(exclude_total){data=data %>% dplyr::filter(!grepl("Total", name, fixed=TRUE))}
 
+  # isolate total_curp
+  total_curps = data %>% dplyr::filter(grepl("total_curp", variable_group) & variable == variables[1])
+  total_curps = total_curps[order(-total_curps$count),]
+
+  # get the n largest names
+  n_largest_names = total_curps$name[1:n]
+
   # remove total_curp and total_stated_curp as they are redundant and unhelpful
   data = data %>% dplyr::filter(!grepl("total", variable_group, fixed = TRUE))
 
-  data$name = as.factor(data$name)
-
-  if(!is.null(regions)) {
-    data = dplyr::filter(data, name %in% regions)
-  } else {
-    # based on https://stackoverflow.com/questions/41963053/r-stacked-bar-charts-including-other-using-ggplot2
-    # a bit slow
-    tidy_df = data[rep(rownames(data), times = data$count), 3] # slow
-    top_n = tidy_df$name %>% forcats::fct_lump_n(n-1+exclude_other) %>% table()
-    data$name = as.character(data$name)
-    data$name[!(data$name %in% names(top_n))] = "Other"
-  }
+  # lump all but top n names into "Other"
+  data$name[!(data$name %in% n_largest_names)] = "Other"
 
   # remove our 'other' category if desired, likely for scale reasons
   if(exclude_other){data=data %>% dplyr::filter(!grepl("Other", name, fixed=TRUE))}
