@@ -62,12 +62,10 @@ get_data = function(geography=NULL, variables=NULL, year = 2018) {
 
   # If there is no land type info available, set land_type column to NA
   if(sum(relevant_hierarchies %in% colnames(db.censusnz::area_hierarchy))==1){
-    land_type = NA
-
     suppressMessages((
       result = geography_df %>%
         dplyr::filter(variable %in% variables) %>%
-        dplyr::mutate(land_type=land_type[[1]])
+        dplyr::mutate(land_type=NA)
     ))
   }
   else{
