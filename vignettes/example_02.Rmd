@@ -1,0 +1,37 @@
+---
+title: "Example 02"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Example 02}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This example demonstrates the flexibility of the plot_data() function outputs,
+  through customisation of its own arguments as well as addition of ggplot
+  elements.
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(censusnz)
+```
+
+```{r fig.align = 'center', fig.height =7, fig.width = 7}
+my_plot <- plot_data("WARD", c("maori_descent", "smoking_status"), n = 5)
+my_plot
+```
+
+We can change colours and labels and generally make any adjustments you would
+normally expect of `ggplot` objects.
+
+```{r fig.align = 'center', fig.height =7, fig.width = 7}
+my_plot + ggplot2::scale_fill_brewer(palette="Paired") +
+  ggplot2::ggtitle("Graphing Maori Descent and Smoking Status for SA1 Region")
+```

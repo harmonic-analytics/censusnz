@@ -75,6 +75,7 @@ plot_data = function(geography = NULL,
                    legend.position = "bottom",
                    legend.title = ggplot2::element_blank()) +
     ggplot2::guides(fill = ggplot2::guide_legend(nrow = 3)) +
-    viridis::scale_fill_viridis(discrete = TRUE)
+    ggplot2::scale_fill_brewer(palette="Set3") +
+    ggplot2::scale_y_continuous(labels = function(x) format(x, scientific = TRUE))
   return(result)
 }

@@ -108,7 +108,7 @@ plot_relative = function(geography = NULL,
                    legend.position = "bottom",
                    legend.title = ggplot2::element_blank()) +
     ggplot2::guides(fill = ggplot2::guide_legend(nrow = 3)) +
-    viridis::scale_fill_viridis(discrete = TRUE)
+    ggplot2::scale_fill_brewer(palette="Set3")
 
   return(result)
 }
