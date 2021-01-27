@@ -1,3 +1,9 @@
+# censusnz 0.2.1.9000
+
+* Updated colours for plots
+* Changed `plot_data` scale to scientific by default
+* Created a short vignette example for further manipulation of plots with ggplot
+
 # censusnz 0.2.0.9000
 
 * Added `plot_relative()` to plot proportions for easier comparison between regions
