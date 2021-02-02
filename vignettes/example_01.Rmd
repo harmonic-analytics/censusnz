@@ -40,10 +40,6 @@ expected, and we have these variables for a range of geographical levels. To
 select a geographical level, consider the breakdown of their relationships from
 Stats NZ.
 
-```{r, echo = FALSE, out.width = '100%'}
-knitr::include_graphics(paste0(getwd(), '/../man/figures/geography_breakdown.png'))
-```
-
 ![Source: Stats NZ and licensed by Stats NZ for reuse under the Creative Commons Attribution 4.0 International licence.](../man/figures/geography_breakdown.png){width=100%}
 
 We can also compare with the codes for the available regions.
@@ -67,11 +63,11 @@ would expect, such as `variable` and `count`, as well as `variable_group` which
 describes various groupings of individuals by their answers to census questions.
 We also have some extra columns:
 
-|Variable|Description|
-|-|------|
-|`geoid`|A unique ID for the geographical unit based on the area hierarchy|
-|`land_type`|The land type, e.g. "Mainland", "Inlet", "Island", "Mixture"|
-|`name`|A name for the geographical unit if available. More informative at lower levels|
+|Variable   |Description                                                                    |
+|-----------|-------------------------------------------------------------------------------|
+|`geoid`    |A unique ID for the geographical unit based on the area hierarchy              |
+|`land_type`|The land type, e.g. "Mainland", "Inlet", "Island", "Mixture"                   |
+|`name`     |A name for the geographical unit if available. More informative at lower levels|
 
 In this case `SA1` units do not have informative names so the `geoid` and `name`
 columns are identical.
@@ -117,7 +113,7 @@ my_data_RC <- get_data(geography = "RC", variables = "status_in_employment")
 vargroup_summary <- my_data_RC[my_data_RC$name == "Total NZ (Regional Council)", c("variable_group", "count")] %>%
   dplyr::group_by(variable_group) %>% 
   dplyr::summarise(n = sum(count), .groups = "drop_last")
-vargroup_summary[order(vargroup_summary$n),]
+vargroup_summary[order(vargroup_summary$n), ]
 ```
 
 It also might pay to investigate by proportion, in which case we can use the `plot_relative()` function.
@@ -129,6 +125,7 @@ plot_relative(geography = "RC",
               position = "fill",
               exclude_other = TRUE,
               exclude_total = FALSE)
+
 plot_relative(geography = "RC",
               variables = c("status_in_employment", "smoking_status"),
               n = 4,

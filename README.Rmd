@@ -21,7 +21,9 @@ knitr::opts_chunk$set(
 [![coverage report](https://gitlab.harmonic.co.nz/harmonic/packages/censusnz/badges/master/coverage.svg)](https://gitlab.harmonic.co.nz/harmonic/packages/censusnz/commits/master)
 <!-- badges: end -->
 
-This package provides an interface to the NZ Census data, returning tidyverse-ready data frames.
+This package provides an interface to the NZ Census data, returning
+  tidyverse-ready data frames. It also includes functions to plot data for
+  selected regions and variables.
 
 Currently, the __censusnz__ package provides data for seven geographical areas:
 
