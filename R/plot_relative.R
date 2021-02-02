@@ -55,7 +55,6 @@ plot_relative = function(geography = NULL,
   variable = NULL
   prop = NULL
 
-
   # fetch data and remove NAs
   data = censusnz::get_data(geography, variables, year) %>%
     dplyr::filter(!is.na(count))
@@ -73,13 +72,13 @@ plot_relative = function(geography = NULL,
       data = dplyr::filter(data, !grepl("Total", name, fixed = TRUE))
     }
 
+    # lump all but top n names into "Other"
+    data$name[!(data$name %in% n_largest_names)] = "Other"
+
     # remove our 'other' category if desired, for scale reasons
     if(exclude_other){
       data = dplyr::filter(data, !grepl("Other", name, fixed=TRUE))
     }
-
-    # lump all but top n names into "Other"
-    data$name[!(data$name %in% n_largest_names)] = "Other"
   }
   else {
     data = dplyr::filter(data, name %in% regions)
