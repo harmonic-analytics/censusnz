@@ -47,60 +47,67 @@ plot_relative = function(geography = NULL,
                          position = "fill",
                          exclude_total = TRUE,
                          exclude_other = TRUE) {
+  # Initialise ----
 
-  count = NULL
-  name = NULL
+  variable       = NULL
+  count          = NULL
   variable_group = NULL
-  total = NULL
-  variable = NULL
-  prop = NULL
+  name           = NULL
+  total          = NULL
+  prop           = NULL
 
-  # fetch data and remove NAs
-  data = censusnz::get_data(geography, variables, year) %>%
-    dplyr::filter(!is.na(count))
+  # Fetch data and remove NAs
+  data = censusnz::get_data(geography, variables, year) %>% dplyr::filter(!is.na(count))
+
+  # If desired, remove Total NZ names (helpful for scale reasons)
+  if(exclude_total){data = dplyr::filter(data, !grepl("Total", name, fixed = TRUE))}
+
+  # Find largest regions to plot ----
 
   if(is.null(regions)) {
-    # isolate total_curp
+    # Isolate total_curp
     total_curps = data %>% dplyr::filter(grepl("total_curp", variable_group) & variable == variables[1])
     total_curps = total_curps[order(-total_curps$count),]
 
-    # get the n largest names
-    n_largest_names = total_curps$name[1:n]
+    # Get the n largest names
+    n_largest_names = total_curps$name[1:n-1+exclude_other]
 
-    # if desired, remove Total NZ names at this point
-    if(exclude_total == TRUE) {
-      data = dplyr::filter(data, !grepl("Total", name, fixed = TRUE))
-    }
+    # Remove total_curp and total_stated_curp as they are redundant and unhelpful
+    data = dplyr::filter(data, !grepl("total", variable_group, fixed = TRUE))
 
-    # lump all but top n names into "Other"
+    # Lump all but top n names into "Other"
     data$name[!(data$name %in% n_largest_names)] = "Other"
 
-    # remove our 'other' category if desired, for scale reasons
+    # Remove our 'other' category if desired, for scale reasons
     if(exclude_other){
       data = dplyr::filter(data, !grepl("Other", name, fixed=TRUE))
     }
   }
   else {
     data = dplyr::filter(data, name %in% regions)
+    # remove 'total * curp' names and groups
+    data = dplyr::filter(data, !grepl("total", variable_group, fixed = TRUE))
   }
 
-  # remove 'total * curp' names and groups
-  data = data %>%
-    dplyr::filter(!grepl("total", variable_group, fixed = TRUE))
+  # Summarise into proportions ----
 
-  # produce summary of total count per name (region)
+  # Produce summary of total count per name (region)
   plot_summaries = data %>%
     dplyr::group_by(name) %>%
     dplyr::summarise(total = sum(count), .groups = "drop_last")
 
-  # join the total counts per name to plot_data
+  # Join the total counts per name to plot_data
   data_props = data %>%
     dplyr::left_join(plot_summaries, by = "name") %>%
     dplyr::mutate(prop = count / total)
-  result = ggplot2::ggplot(data_props,
-                           ggplot2::aes(fill = stringr::str_replace_all(
-                             variable_group, paste0("(.{20})"),"\\1\n"),
-                             x = variable, y = prop)) +
+
+  # Produce Graph ----
+
+  result =
+    ggplot2::ggplot(data_props,
+                    ggplot2::aes(fill = stringr::str_replace_all(
+                      variable_group, paste0("(.{20})"),"\\1\n"),
+                      x = variable, y = prop)) +
     ggplot2::geom_bar(stat = "identity", position=position) +
     ggplot2::facet_wrap(~name) +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),

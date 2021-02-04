@@ -84,8 +84,8 @@ has additional arguments to customise this output. For example:
 ```{r fig.align = 'center', fig.height =7, fig.width = 7}
 plot_data(geography = "RC",
           variables = c("status_in_employment", "smoking_status"),
-          n = 3,
-          exclude_other = FALSE,
+          n = 4,
+          exclude_other = TRUE,
           exclude_total = FALSE)
 ```
 
@@ -98,13 +98,27 @@ is expected. Auckland Region is the largest single region by count, and 'Other'
 encompasses all remaining regions. The counts for Auckland and Other should add
 to the same as Total NZ.
 
-From this output, we can make several observations about individuals 15 years and over:
+Note that using `exclude_total = FALSE` often introduces issues with the scale
+of smaller regions on the same plot. Using `plot_relative` can be helpful to
+address this.
+
+```{r fig.align = 'center', fig.height =7, fig.width = 7}
+plot_relative(geography = "RC",
+              variables = c("status_in_employment", "smoking_status"),
+              n = 4,
+              exclude_other = TRUE,
+              exclude_total = FALSE)
+```
+
+We can also make several general observations about individuals 15 years and 
+over:
 
 * Most individuals have never smoked
 * There are slightly more ex-smokers than regular smokers
 * The vast majority of individuals are employed
 * More individuals are self-employed without employees than are employers
-* There are relatively very small numbers of individuals who are unpaid family workers or not elsewhere included
+* There are relatively very small numbers of individuals who are unpaid family
+workers or not elsewhere included
 
 We can investigate this final point further:
 
@@ -116,25 +130,21 @@ vargroup_summary <- my_data_RC[my_data_RC$name == "Total NZ (Regional Council)",
 vargroup_summary[order(vargroup_summary$n), ]
 ```
 
-It also might pay to investigate by proportion, in which case we can use the `plot_relative()` function.
+Plot relative is also helpful for direct comparison, using the `regions`
+argument.
 
 ```{r fig.align = 'center', fig.height =7, fig.width = 7}
 plot_relative(geography = "RC",
               variables = c("status_in_employment", "smoking_status"),
-              n = 4,
-              position = "fill",
-              exclude_other = TRUE,
-              exclude_total = FALSE)
+              regions = c("Auckland Region", "Wellington Region"),
+              position = "fill")
 
 plot_relative(geography = "RC",
               variables = c("status_in_employment", "smoking_status"),
-              n = 4,
-              position = "dodge",
-              exclude_other = TRUE,
-              exclude_total = FALSE)
+              regions = c("Auckland Region", "Wellington Region"),
+              position = "dodge")
 ```
 
-This allows us to better observe relative differences between regions. For
-example, we can see that Auckland region has a higher proportion of individuals
-who have never smoked than the Total NZ average, and Wellington has a relatively
-smaller proportion of employers than average.
+We can see that Auckland region has a higher proportion of individuals who have
+never smoked than Wellington, and Wellington has far more ex-smokers. However, 
+Auckland and Wellington have very similar compositions of employment status.

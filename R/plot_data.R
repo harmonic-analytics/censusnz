@@ -37,33 +37,40 @@ plot_data = function(geography = NULL,
                      n = 6,
                      exclude_total = TRUE,
                      exclude_other = TRUE) {
-  variable=NULL
-  count=NULL
-  variable_group=NULL
-  name=NULL
-  # fetch data and remove NAs
+  # Initialise ----
+
+  variable       = NULL
+  count          = NULL
+  variable_group = NULL
+  name           = NULL
+
+  # Fetch data and remove NAs
   data = censusnz::get_data(geography, variables, year) %>% dplyr::filter(!is.na(count))
 
-  # remove the 'Total NZ' column as it is unhelpful for scale comparison
-  if(exclude_total){data=data %>% dplyr::filter(!grepl("Total", name, fixed=TRUE))}
+  # If desired, remove Total NZ names (helpful for scale reasons)
+  if(exclude_total){data = dplyr::filter(data, !grepl("Total", name, fixed = TRUE))}
 
-  # isolate total_curp
+  # Find largest regions to plot ----
+
+  # Isolate total_curp
   total_curps = data %>% dplyr::filter(grepl("total_curp", variable_group) & variable == variables[1])
   total_curps = total_curps[order(-total_curps$count),]
 
-  # get the n largest names
-  n_largest_names = total_curps$name[1:n]
+  # Get the n largest names
+  n_largest_names = total_curps$name[1:n-1+exclude_other]
 
-  # remove total_curp and total_stated_curp as they are redundant and unhelpful
-  data = data %>% dplyr::filter(!grepl("total", variable_group, fixed = TRUE))
+  # Remove total_curp and total_stated_curp as they are redundant and unhelpful
+  data = dplyr::filter(data, !grepl("total", variable_group, fixed = TRUE))
 
-  # lump all but top n names into "Other"
+  # Lump all but top n names into "Other"
   data$name[!(data$name %in% n_largest_names)] = "Other"
 
-  # remove our 'other' category if desired, likely for scale reasons
+  # Remove our 'other' category if desired, likely for scale reasons
   if(exclude_other){data=data %>% dplyr::filter(!grepl("Other", name, fixed=TRUE))}
 
-  # plot graph, wrap legend labels and put legend below for visibility
+  # Produce Graph ----
+
+  # Plot graph, wrap legend labels and put legend below for visibility
   result = data %>%
     ggplot2::ggplot(ggplot2::aes(x = variable,
                                  y = count,

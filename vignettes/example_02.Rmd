@@ -23,8 +23,8 @@ knitr::opts_chunk$set(
 library(censusnz)
 ```
 
-```{r fig.align = 'center', fig.height =7, fig.width = 7}
-my_plot <- plot_data("WARD", c("maori_descent", "smoking_status"), n = 5)
+```{r fig.align = 'center', fig.height = 7, fig.width = 7}
+my_plot <- plot_data("WARD", c("maori_descent", "smoking_status"), n = 6)
 my_plot
 ```
 
@@ -33,5 +33,5 @@ normally expect of `ggplot` objects.
 
 ```{r fig.align = 'center', fig.height =7, fig.width = 7}
 my_plot + ggplot2::scale_fill_brewer(palette="Paired") +
-  ggplot2::ggtitle("Graphing Maori Descent and Smoking Status for SA1 Region")
+  ggplot2::ggtitle("2018 Census Results by Ward")
 ```
