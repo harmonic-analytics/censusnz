@@ -10,6 +10,7 @@ plot_data(
   regions = NULL,
   year = 2018,
   n = 6,
+  position = "dodge",
   exclude_total = TRUE,
   exclude_other = TRUE
 )
@@ -24,6 +25,8 @@ plot_data(
 \item{year}{The year of data requested. Currently the only available year is 2018, which is the default}
 
 \item{n}{The number of areas to use as faceted plots}
+
+\item{position}{The position to plot the bars in, "dodge", "stacked" or "fill"}
 
 \item{exclude_total}{Whether or not to exclude any data with name label containing the substring "Total"}
 
@@ -50,4 +53,13 @@ plot_data("RC",
           n = 3,
           exclude_total = FALSE,
           exclude_other = FALSE)
+# Plot by proportion
+plot_data("RC",
+          "maori_descent",
+          position = "fill")
+# Compare selected regions
+plot_data("RC",
+          "maori_descent",
+          regions = c("Auckland Region", "Wellington Region"),
+          position = "fill")
 }

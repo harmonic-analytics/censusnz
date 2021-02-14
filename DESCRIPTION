@@ -21,7 +21,8 @@ Imports:
     stringr,
     tibble,
     tidyselect,
-    viridis
+    viridis,
+    RColorBrewer
 Suggests: 
     knitr,
     rmarkdown,

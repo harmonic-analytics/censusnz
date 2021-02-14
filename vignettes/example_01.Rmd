@@ -22,27 +22,34 @@ knitr::opts_chunk$set(
 library(censusnz)
 ```
 
-Let's say we want to investigate smoking and employment statistics, but we
-aren't sure which geographical level to investigate at. We can begin by using 
-`get_variables` to check what variables are available, and to take note of their
-exact names.
+To begin investigating NZ Census data, running `get_variables` will provide a
+list of all the available variables and the geographical levels at which they
+are available. It is useful for general exploration as well as confirmation of
+the exact names of variables in the data.
 
 ```{r}
 vars <- get_variables()
+vars
+```
+
+This is a bit overwhelming. Let's narrow our search down, for example to data on
+smoking and employment.
+
+```{r}
 relevant_vars <- vars %>% 
   dplyr::filter(grepl("employment", variable, fixed = TRUE) |
                   grepl("smoking", variable, fixed = TRUE))
 relevant_vars
 ```
 
-It seems we have variables `status_in_employment` and `smoking_status` as
+We have found variables `status_in_employment` and `smoking_status` as
 expected, and we have these variables for a range of geographical levels. To
 select a geographical level, consider the breakdown of their relationships from
 Stats NZ.
 
 ![Source: Stats NZ and licensed by Stats NZ for reuse under the Creative Commons Attribution 4.0 International licence.](../man/figures/geography_breakdown.png){width=100%}
 
-We can also compare with the codes for the available regions.
+We can compare with the codes for the available regions.
 
 ```{r}
 vars$geography %>% unique()
@@ -72,7 +79,16 @@ We also have some extra columns:
 In this case `SA1` units do not have informative names so the `geoid` and `name`
 columns are identical.
 
-Maybe instead of `SA1`, we try plotting the data by `RC` unit, for Regional Councils.
+Maybe instead of `SA1`, we investigate the data by `RC` unit, for Regional Councils.
+
+```{r}
+my_data <- get_data(geography = "RC",
+                    variables = c("status_in_employment", "smoking_status"))
+my_data
+```
+
+This could be more informative. To visualise these figures, use the `plot_data`
+function. First we will try with all the default argument values.
 
 ```{r fig.align = 'center', fig.height = 7, fig.width = 7}
 plot_data(geography = "RC", variables = c("status_in_employment", "smoking_status"))
@@ -81,17 +97,18 @@ plot_data(geography = "RC", variables = c("status_in_employment", "smoking_statu
 By default this plots the 6 regions with the highest count. However, `plot_data`
 has additional arguments to customise this output. For example:
 
-```{r fig.align = 'center', fig.height =7, fig.width = 7}
+```{r fig.align = 'center', fig.height = 7, fig.width = 7}
 plot_data(geography = "RC",
           variables = c("status_in_employment", "smoking_status"),
           n = 4,
-          exclude_other = TRUE,
+          exclude_other = FALSE,
           exclude_total = FALSE)
 ```
 
 `exclude_total` removes the Total NZ category if it exists and `exclude_other` 
 ignores lumping of categories into "other". When we set `exclude_other` and
-`exclude_total` to FALSE, we now have these extra categories included in our output.
+`exclude_total` to FALSE, we now have these extra categories included in our
+output.
 
 With these set to FALSE we can see that Total NZ has the highest counts, which
 is expected. Auckland Region is the largest single region by count, and 'Other'
@@ -99,18 +116,20 @@ encompasses all remaining regions. The counts for Auckland and Other should add
 to the same as Total NZ.
 
 Note that using `exclude_total = FALSE` often introduces issues with the scale
-of smaller regions on the same plot. Using `plot_relative` can be helpful to
-address this.
+of smaller regions on the same plot. Using `position = "fill"` can be helpful to
+address this, displaying a stacked bar graph by proportion instead of absolute
+heights.
 
-```{r fig.align = 'center', fig.height =7, fig.width = 7}
-plot_relative(geography = "RC",
-              variables = c("status_in_employment", "smoking_status"),
-              n = 4,
-              exclude_other = TRUE,
-              exclude_total = FALSE)
+```{r fig.align = 'center', fig.height = 7, fig.width = 7}
+plot_data(geography = "RC",
+          variables = c("status_in_employment", "smoking_status"),
+          n = 4,
+          position = "fill",
+          exclude_other = TRUE,
+          exclude_total = FALSE)
 ```
 
-We can also make several general observations about individuals 15 years and 
+We can make several general observations about individuals 15 years and 
 over:
 
 * Most individuals have never smoked
@@ -130,19 +149,14 @@ vargroup_summary <- my_data_RC[my_data_RC$name == "Total NZ (Regional Council)",
 vargroup_summary[order(vargroup_summary$n), ]
 ```
 
-Plot relative is also helpful for direct comparison, using the `regions`
-argument.
+Plotting by proportion is also helpful for direct comparison, using the `regions`
+argument and `position = "fill"`.
 
-```{r fig.align = 'center', fig.height =7, fig.width = 7}
-plot_relative(geography = "RC",
-              variables = c("status_in_employment", "smoking_status"),
-              regions = c("Auckland Region", "Wellington Region"),
-              position = "fill")
-
-plot_relative(geography = "RC",
-              variables = c("status_in_employment", "smoking_status"),
-              regions = c("Auckland Region", "Wellington Region"),
-              position = "dodge")
+```{r fig.align = 'center', fig.height = 7, fig.width = 7}
+plot_data(geography = "RC",
+          variables = c("status_in_employment", "smoking_status"),
+          regions = c("Auckland Region", "Wellington Region"),
+          position = "fill")
 ```
 
 We can see that Auckland region has a higher proportion of individuals who have

@@ -7,3 +7,9 @@ test_that("plot_data runs without error", {
                           regions = "Auckland Region",
                           n = 2))
 })
+
+test_that("plot_data returns ggplot object", {
+  my_plot = plot_data(geography = "WARD",
+                      variables = "sex")
+  expect_is(my_plot, "ggplot")
+})

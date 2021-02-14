@@ -16,7 +16,7 @@
 #' # Get data for multiple variables
 #' get_data("RC", c("maori_descent", "smoking_status"))
 
-get_data = function(geography=NULL, variables=NULL, year = 2018) {
+get_data = function(geography = NULL, variables = NULL, year = 2018) {
   geoid = NULL
   LANDWATER_NAME = NULL
   variable = NULL
@@ -31,7 +31,7 @@ get_data = function(geography=NULL, variables=NULL, year = 2018) {
                             msg = "Must provide a variable(s)")
 
   # Setup
-  result <- tibble::tribble(~geoid,
+  result = tibble::tribble(~geoid,
                             ~land_type,
                             ~name,
                             ~variable,
