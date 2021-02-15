@@ -109,7 +109,6 @@ plot_data = function(geography = NULL,
     ggplot2::geom_col(position = position) +
     ggplot2::facet_wrap(~forcats::fct_reorder(name, count)) +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
-                   legend.key.height = ggplot2::unit(1.2, "cm"),
                    legend.title = ggplot2::element_blank()) +
     ggplot2::scale_fill_manual(values = my_colours, labels = function(x) stringr::str_wrap(x, width=20))
 
