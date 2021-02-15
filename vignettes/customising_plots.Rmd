@@ -1,15 +1,15 @@
 ---
-title: "Example 02"
+title: "Customising plots"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Example 02}
+  %\VignetteIndexEntry{Customising plots}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-This example demonstrates the flexibility of the plot_data() function outputs,
-  through customisation of its own arguments as well as addition of ggplot
-  elements.
+This vignette is not intended as a complete `ggplot` tutorial, but rather a few
+ quick examples of possible tweaks to the output of `plot_data` which might be
+ helpful.
 
 
 ```{r, include = FALSE}
