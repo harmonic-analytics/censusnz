@@ -7,3 +7,4 @@
 ^\.dockerignore$
 ^doc$
 ^Meta$
+^\.travis\.yml$

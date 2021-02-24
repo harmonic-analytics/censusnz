@@ -5,9 +5,8 @@
 
 <!-- badges: start -->
 
-[![pipeline-status](https://gitlab.harmonic.co.nz/harmonic/packages/censusnz/badges/master/pipeline.svg)](https://gitlab.harmonic.co.nz/harmonic/packages/censusnz/pipelines)
-[![coverage
-report](https://gitlab.harmonic.co.nz/harmonic/packages/censusnz/badges/master/coverage.svg)](https://gitlab.harmonic.co.nz/harmonic/packages/censusnz/commits/master)
+[![Travis build
+status](https://travis-ci.org/harmonic-analytics/censusnz.svg?branch=master)](https://travis-ci.org/harmonic-analytics/censusnz)
 <!-- badges: end -->
 
 This package provides an interface to the NZ Census data, returning
@@ -29,12 +28,10 @@ This package automatically installs the **db.censusnz** package.
 
 ## Installation
 
-To install this package from gitlab, you must first generate a Personal
-Access Token; the package can then be installed using the Remotes
-package:
+Install this package using the remotes package:
 
 ``` r
-remotes::install_gitlab(repo = 'harmonic/packages/censusnz', auth_token = <PAT>, host = 'gitlab.harmonic.co.nz')
+remotes::install_github("harmonic-analytics/censusnz")
 ```
 
 ## Examples
