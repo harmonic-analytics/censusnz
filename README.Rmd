@@ -14,14 +14,16 @@ knitr::opts_chunk$set(
 )
 ```
 
-# censusnz
+# censusnz <img src='man/figures/logo.png' align="right" height="182.5" />
 
 <!-- badges: start -->
+[![pipeline-status](https://gitlab.harmonic.co.nz/harmonic/packages/censusnz/badges/master/pipeline.svg)](https://gitlab.harmonic.co.nz/harmonic/packages/censusnz/pipelines)
+[![coverage report](https://gitlab.harmonic.co.nz/harmonic/packages/censusnz/badges/master/coverage.svg)](https://gitlab.harmonic.co.nz/harmonic/packages/censusnz/commits/master)
 <!-- badges: end -->
 
-# Overview
-
-This package provides an interface to the NZ Census data, returning tidyverse-ready data frames.
+This package provides an interface to the NZ Census data, returning
+  tidyverse-ready data frames. It also includes functions to plot data for
+  selected regions and variables.
 
 Currently, the __censusnz__ package provides data for seven geographical areas:
 
@@ -43,12 +45,11 @@ To install this package from gitlab, you must first generate a Personal Access T
 remotes::install_gitlab(repo = 'harmonic/packages/censusnz', auth_token = <PAT>, host = 'gitlab.harmonic.co.nz')
 ```
 
-## Example
+## Examples
 
-A basic call to get_data() for a particular geography and variables:
-
-```{r example}
-library(censusnz)
-
-get_data("RC", c("maori_descent", "smoking_status")) %>% head()
+The package includes vignettes detailing the use of the provided functions.
+  To view these vignettes run the following after installing the package:
+```{r eval = FALSE}
+vignette("example_01", package = "censusnz")
+vignette("example_02", package = "censusnz")
 ```

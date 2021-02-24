@@ -7,18 +7,24 @@
 get_data(geography = NULL, variables = NULL, year = 2018)
 }
 \arguments{
-\item{geography}{A string of the geographic area to be selected. Must be one of SA1, SA2, LBA, DHB, TA, RC, WARD}
+\item{geography}{A string of the geographic area to be selected. Must be one
+of SA1, SA2, LBA, DHB, TA, RC, WARD}
 
-\item{variables}{A string or character vector of the variables to be selected. Can use get_variables() to examine available variables}
+\item{variables}{A string or character vector of the variables to be selected
+. Can use get_variables() to examine available variables}
 
-\item{year}{The year of data requested. Currently the only available year is 2018, which is the default}
+\item{year}{The year of data requested. Currently the only available year is
+2018, which is the default}
 }
 \value{
-The resulting dataframe for the requested geography, variables
+The resulting dataframe for the requested geography and variable(s)
 }
 \description{
 Get New Zealand census data
 }
 \examples{
+# Get data for a single variable
+get_data("RC", c("maori_descent"))
+# Get data for multiple variables
 get_data("RC", c("maori_descent", "smoking_status"))
 }

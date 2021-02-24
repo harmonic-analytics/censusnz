@@ -1,25 +1,36 @@
-Package: censusnz
 Type: Package
+Package: censusnz
 Title: Get NZ Census Data
-Version: 0.0.0.9000
+Version: 0.3.0.9000
 Authors@R: 
     person(given = "Alexander",
            family = "Farmiloe",
-           email = "alex@harmonic.co.nz", 
-           role = c("aut", "cre"))
-Description: Provides an interface to get NZ census data, using db.censusnz.
+           role = c("aut", "cre"),
+           email = "alex@harmonic.co.nz")
+Description: Provides an interface to get NZ census data, using
+    db.censusnz.
 License: MIT + file LICENSE
+Imports:
+    assertthat,
+    db.censusnz,
+    dplyr,
+    forcats,
+    ggplot2,
+    magrittr,
+    pkgload,
+    stringr,
+    tibble,
+    tidyselect,
+    viridis,
+    RColorBrewer
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat
+VignetteBuilder: 
+    knitr
+Remotes:
+    harmonic-analytics/db-censusnz
 Encoding: UTF-8
 LazyData: true
-Imports:
-    db.censusnz,
-    magrittr,
-    dplyr,
-    assertthat,
-    tibble,
-    tidyselect
-Remotes:
-  harmonic-analytics/db-censusnz
 RoxygenNote: 7.1.1
-Suggests: 
-    testthat

@@ -5,8 +5,8 @@
 #'
 #' @examples
 #' get_variables()
+
 get_variables = function() {
   result = db.censusnz::available_variables
-
   return(result)
 }
