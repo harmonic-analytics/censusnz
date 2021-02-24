@@ -11,7 +11,8 @@ report](https://gitlab.harmonic.co.nz/harmonic/packages/censusnz/badges/master/c
 <!-- badges: end -->
 
 This package provides an interface to the NZ Census data, returning
-tidyverse-ready data frames.
+tidyverse-ready data frames. It also includes functions to plot data for
+selected regions and variables.
 
 Currently, the **censusnz** package provides data for seven geographical
 areas:
@@ -38,10 +39,10 @@ remotes::install_gitlab(repo = 'harmonic/packages/censusnz', auth_token = <PAT>,
 
 ## Examples
 
-The package includes a vignettes detailing the use of the provided
-functions. To view this vignette run the following after installing the
-package:
+The package includes vignettes detailing the use of the provided
+functions. To view these vignettes run the following after installing
+the package:
 
 ``` r
-vignette("Example 01", package = "censusnz")
+browseVignettes(package = "censusnz")
 ```
