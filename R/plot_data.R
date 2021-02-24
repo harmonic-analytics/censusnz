@@ -92,8 +92,10 @@ plot_data = function(geography = NULL,
   data$variable_group = gsub("_", " ", data$variable_group)
 
   # Generate extended colour palette in case there are many variables
+  my_colours_function = grDevices::colorRampPalette(RColorBrewer::brewer.pal(8, "Set2"))
+
   num_unique_curp = length(unique(data$variable_group))
-  my_colours = grDevices::colorRampPalette(RColorBrewer::brewer.pal(8, "Set2"))(num_unique_curp)
+  my_colours = my_colours_function(num_unique_curp)
 
   # Reorder variable_group factor for legend labels
   vars_and_groups = dplyr::select(data, variable, variable_group)

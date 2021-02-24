@@ -1,3 +1,7 @@
+# censusnz 0.3.0.9000
+
+* Removed `plot_relative`, functionality replaced by `position = 'fill'` in `plot_data`
+
 # censusnz 0.2.1.9000
 
 * Updated colours for plots
