@@ -73,8 +73,9 @@ plot_data = function(geography = NULL,
     # Remove total_curp and total_stated_curp as they are redundant and unhelpful
     data = dplyr::filter(data, !grepl("total", variable_group, fixed = TRUE))
 
-    # Lump all but top n names into "Other"
+    # Lump all but top n names into "Other" and sum
     data$name[!(data$name %in% n_largest_names)] = "Other"
+    data = data %>% dplyr::group_by(name, variable, variable_group) %>% dplyr::summarise(count = sum(count)) %>% dplyr::ungroup()
 
     # Remove our 'other' category if desired, likely for scale reasons
     if(exclude_other){data=data %>% dplyr::filter(!grepl("Other", name, fixed=TRUE))}
@@ -98,7 +99,7 @@ plot_data = function(geography = NULL,
   my_colours = my_colours_function(num_unique_curp)
 
   # Reorder variable_group factor for legend labels
-  vars_and_groups = dplyr::select(data, variable, variable_group)
+  vars_and_groups = data %>% dplyr::select(variable, variable_group)
   vars_and_groups = unique(vars_and_groups[order(vars_and_groups$variable, vars_and_groups$variable_group), ])
 
   data$variable_group = factor(data$variable_group, levels = vars_and_groups$variable_group)
@@ -115,9 +116,12 @@ plot_data = function(geography = NULL,
     ggplot2::scale_fill_manual(values = my_colours, labels = function(x) stringr::str_wrap(x, width=20))
 
   # Use sensible label format for absolute scale graphs
-  if(position == "dodge" || position == "stacked") {
+  if(tolower(position) == "dodge" || tolower(position) == "stack") {
     result = result + ggplot2::scale_y_continuous(labels = function(x) format(x, scientific = TRUE))
+  } else {
+    result = result + ggplot2::labs(y = 'proportion')
   }
+
 
   return(result)
 }
