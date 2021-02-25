@@ -41,13 +41,13 @@ This package automatically installs the __db.censusnz__ package.
 Install this package using the remotes package:
 
 ```{r, eval=FALSE}
-remotes::install_github("harmonic-analytics/censusnz")
+remotes::install_github("harmonic-analytics/censusnz", build_vignettes = TRUE)
 ```
 
 ## Examples
 
 The package includes vignettes detailing the use of the provided functions.
-  To view these vignettes run the following after installing the package:
+To view these vignettes run the following after installing the package:
   
 ```{r eval = FALSE}
 browseVignettes(package = "censusnz")

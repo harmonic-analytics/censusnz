@@ -31,7 +31,7 @@ This package automatically installs the **db.censusnz** package.
 Install this package using the remotes package:
 
 ``` r
-remotes::install_github("harmonic-analytics/censusnz")
+remotes::install_github("harmonic-analytics/censusnz", build_vignettes = TRUE)
 ```
 
 ## Examples
