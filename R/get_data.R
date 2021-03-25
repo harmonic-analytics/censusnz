@@ -4,8 +4,7 @@
 #'   of SA1, SA2, LBA, DHB, TA, RC, WARD
 #' @param variables A string or character vector of the variables to be selected
 #'   . Can use get_variables() to examine available variables
-#' @param year The year of data requested. Currently the only available year is
-#'   2018, which is the default
+#' @param year The year of data requested. Must be either 2006, 2013 or 2018.
 #'
 #' @return The resulting dataframe for the requested geography and variable(s)
 #' @export
@@ -16,7 +15,7 @@
 #' # Get data for multiple variables
 #' get_data("RC", c("maori_descent", "smoking_status"))
 
-get_data = function(geography = NULL, variables = NULL, year = 2018) {
+get_data = function(geography = NULL, variables = NULL, year = NULL) {
   geoid = NULL
   LANDWATER_NAME = NULL
   variable = NULL
@@ -24,11 +23,15 @@ get_data = function(geography = NULL, variables = NULL, year = 2018) {
 
   # Make sure a geography(s) is provided
   assertthat::assert_that(!is.null(geography),
-                            msg = "Must provide a geography")
+                            msg = "Must provide a geography(s)")
 
   # Make sure a variable(s) is provided
   assertthat::assert_that(!is.null(variables),
                             msg = "Must provide a variable(s)")
+
+  # Make sure a year(s) is provided
+  assertthat::assert_that(!is.null(year),
+                          msg = "Must provide a year(s)")
 
   # Setup
   result = tibble::tribble(~geoid,
@@ -61,7 +64,7 @@ get_data = function(geography = NULL, variables = NULL, year = 2018) {
   )
 
   # If there is no land type info available, set land_type column to NA
-  if(sum(relevant_hierarchies %in% colnames(db.censusnz::area_hierarchy))==1){
+  if(sum(relevant_hierarchies %in% colnames(db.censusnz::area_hierarchy_2018))==1){
     suppressMessages((
       result = geography_df %>%
         dplyr::filter(variable %in% variables) %>%
@@ -70,7 +73,7 @@ get_data = function(geography = NULL, variables = NULL, year = 2018) {
   }
   else{
     # Process data to provide useful land_type column
-    land_type = db.censusnz::area_hierarchy %>%
+    land_type = db.censusnz::area_hierarchy_2018 %>%
       dplyr::select(tidyselect::any_of(relevant_hierarchies)) %>%
       dplyr::rename(land_type = LANDWATER_NAME) %>%
       dplyr::mutate(dplyr::across(tidyselect::vars_select_helpers$where(is.factor), as.character)) %>%
