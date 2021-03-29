@@ -61,7 +61,8 @@ We construct our first call to `get_data()`.
 
 ```{r}
 my_data <- get_data(geography = "SA1",
-                    variables = c("status_in_employment", "smoking_status"))
+                    variables = c("status_in_employment", "smoking_status"),
+                    year = 2018)
 my_data
 ```
 

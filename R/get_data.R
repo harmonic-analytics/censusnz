@@ -11,11 +11,11 @@
 #'
 #' @examples
 #' # Get data for a single variable
-#' get_data("RC", c("maori_descent"))
+#' get_data("RC", c("maori_descent"), 2018)
 #' # Get data for multiple variables
-#' get_data("RC", c("maori_descent", "smoking_status"))
+#' get_data("RC", c("maori_descent", "smoking_status"), 2018)
 
-get_data = function(geography = NULL, variables = NULL, year = NULL) {
+get_data = function(geography = NULL, variables = NULL, year = 2018) {
   geoid = NULL
   LANDWATER_NAME = NULL
   variable = NULL
@@ -47,6 +47,10 @@ get_data = function(geography = NULL, variables = NULL, year = NULL) {
   assertthat::assert_that(all(tolower(variables) %in% avail_vars),
                             msg = "At least one of the provided variables is not
                                    valid, see censusnz::get_variables()")
+
+  # Check provided year(s) are valid
+  assertthat::assert_that(year %in% c(2006, 2013, 2018),
+                          msg = "Year(s) must be numeric and chosen from 2006, 2013 and/or 2018")
 
   if(!is.null(variables)){
     variables = match.arg(tolower(variables),
