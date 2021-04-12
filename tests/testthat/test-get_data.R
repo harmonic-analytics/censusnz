@@ -1,11 +1,11 @@
 test_that("get_data() works for correct inputs", {
-  expect_silent(result <- censusnz::get_data(geography = "RC", variables = c("maori_descent", "smoking_status")))
+  expect_silent(result <- censusnz::get_data(geography = "RC", variables = c("maori_descent", "smoking_status"), year = 2006))
   expect_true("data.frame" %in% class(result))
   expect_true(all(c("geoid", "land_type", "name", "variable", "variable_group", "count") %in% colnames(result)))
-  expect_silent(result <- censusnz::get_data("DHB", "maori_descent"))
+  expect_silent(result <- censusnz::get_data("DHB", "maori_descent", 2013))
 })
 
-test_that("get_data() errors on missing inputs", {
+test_that("get_data() errors on missing geography and variable inputs", {
   expect_error(censusnz::get_data(variables = c("maori_descent", "smoking_status")))
   expect_error(censusnz::get_data(geography = "RC"))
 })

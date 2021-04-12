@@ -8,12 +8,12 @@
 #'   categories is possible.
 #'
 #' @return A ggplot object containing a plot of each variable, for each geographic
-#' region name, coloured by variable group, from 2018 NZ census data.
+#' region name, coloured by variable group, for 2006, 2013 or 2018 NZ census data.
 #'
 #' @param geography A string of the geographic area to be selected. Must be one of SA1, SA2, LBA, DHB, TA, RC, WARD
 #' @param variables A string or character vector of the variables to be selected. Can use get_variables() to examine available variables
 #' @param regions A string or vector of the regions to be selected
-#' @param year The year of data requested. Currently the only available year is 2018, which is the default
+#' @param year The year of data requested. Must be chosen from either 2006, 2013 or 2018.
 #' @param n The number of areas to use as faceted plots
 #' @param position The position to plot the bars in, "dodge", "stacked" or "fill"
 #' @param exclude_total Whether or not to exclude any data with name label containing the substring "Total"

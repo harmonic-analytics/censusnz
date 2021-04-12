@@ -1,19 +1,19 @@
 #' Get New Zealand census data
 #'
 #' @param geography A string of the geographic area to be selected. Must be one
-#'   of SA1, SA2, LBA, DHB, TA, RC, WARD
+#'   of SA1, SA2, LBA, DHB, TA, RC, WARD.
 #' @param variables A string or character vector of the variables to be selected
-#'   . Can use get_variables() to examine available variables
-#' @param year The year of data requested. Must be either 2006, 2013 or 2018.
+#'   . Can use get_variables() to examine available variables.
+#' @param year The year of data requested. Must be one of 2006, 2013 or 2018.
 #'
-#' @return The resulting dataframe for the requested geography and variable(s)
+#' @return The resulting dataframe for the requested geography, year and and variable(s)
 #' @export
 #'
 #' @examples
 #' # Get data for a single variable
 #' get_data("RC", c("maori_descent"), 2018)
 #' # Get data for multiple variables
-#' get_data("RC", c("maori_descent", "smoking_status"), 2018)
+#' get_data("RC", c("maori_descent", "smoking_status"), 2006)
 
 get_data = function(geography = NULL, variables = NULL, year = 2018) {
   geoid = NULL
@@ -21,17 +21,14 @@ get_data = function(geography = NULL, variables = NULL, year = 2018) {
   variable = NULL
   n_landtype = NULL
 
-  # Make sure a geography(s) is provided
-  assertthat::assert_that(!is.null(geography),
-                            msg = "Must provide a geography(s)")
+  # Make sure a geography is provided
+  assert_geography(geography)
+
+  # Make sure a year is provided
+  assert_year(year)
 
   # Make sure a variable(s) is provided
-  assertthat::assert_that(!is.null(variables),
-                            msg = "Must provide a variable(s)")
-
-  # Make sure a year(s) is provided
-  assertthat::assert_that(!is.null(year),
-                          msg = "Must provide a year(s)")
+  assert_variables(variables)
 
   # Setup
   result = tibble::tribble(~geoid,
@@ -42,23 +39,8 @@ get_data = function(geography = NULL, variables = NULL, year = 2018) {
                             ~count)
   geography = toupper(geography)
 
-  # Check provided variables are valid
-  avail_vars = db.censusnz::available_variables$variable
-  assertthat::assert_that(all(tolower(variables) %in% avail_vars),
-                            msg = "At least one of the provided variables is not
-                                   valid, see censusnz::get_variables()")
-
-  # Check provided year(s) are valid
-  assertthat::assert_that(year %in% c(2006, 2013, 2018),
-                          msg = "Year(s) must be numeric and chosen from 2006, 2013 and/or 2018")
-
-  if(!is.null(variables)){
-    variables = match.arg(tolower(variables),
-                            unique(db.censusnz::available_variables$variable),
-                            several.ok = TRUE)
-  }
-
-  geography_df = get_geography(geography)
+  # Get data set for specified geography and year
+  geography_df = get_geog_year(geography, year)
 
   # Filter Data
   relevant_hierarchies = c(
@@ -105,25 +87,72 @@ get_data = function(geography = NULL, variables = NULL, year = 2018) {
   return (result)
 }
 
+
+assert_geography = function(geography){
+  # Make sure there is one area type specified, from the accepted types
+  geography = toupper(geography)
+  areas = c("SA1", "SA2", "LBA", "DHB", "TA", "RC", "WARD")
+  assertthat::assert_that(!is.null(geography), msg = "Must provide a geography")
+  assertthat::assert_that(geography %in% areas, msg = paste("geography must be one of:", paste(areas, collapse = ', ')))
+  assertthat::assert_that(length(geography) == 1, msg = "only one geography can be specified")
+  return(invisible(geography))
+}
+
+assert_year = function(year){
+  # Make sure one year is specified, from the accepted years
+  yrs = c(2006, 2013, 2018)
+  assertthat::assert_that(year %in% yrs, msg = paste("year must be one of:", paste(yrs, collapse = ', ')))
+  assertthat::assert_that(length(year) == 1, msg = "only one year can be specified")
+  return(invisible(year))
+}
+
+assert_variables = function(variable){
+  # Make sure variable(s) is/are one of the accepted variables
+  assertthat::assert_that(!is.null(variable), msg = "Must provide at least one variable")
+  assertthat::assert_that(all(tolower(variable) %in% available_variables()),
+                          msg = "At least one of the provided variables is not valid, see censusnz::get_variables()")
+  return(invisible(variable))
+}
+
+available_variables = function(){
+  unique(db.censusnz::available_variables$variable)
+}
+
+
 #' Get geography dataframe given input string
 #'
-#' @return The resulting dataframe for the requested geography, unedited from db.censusnz
+#' @return The resulting dataframe for the requested geography and year, unedited from db.censusnz
 #' @param geography A string of the geographic area to be selected. Must be one of SA1, SA2, LBA, DHB, TA, RC, WARD
+#' @param year The year of data requested. Must be one of 2006, 2013 or 2018.
 #' @noRd
-get_geography = function(geography) {
+get_geog_year = function(geography, year) {
 
-  # Make sure area type is one of the accepted types
-  types = c("SA1", "SA2", "LBA", "DHB", "TA", "RC", "WARD")
-  assertthat::assert_that(geography %in% types, msg = paste("geography must be one of:", paste(types, collapse = ', ')))
+  assert_geography(geography)
+  assert_year(year)
 
-  result = switch(geography,
-                  "SA1" = db.censusnz::SA1,
-                  "SA2" = db.censusnz::SA2,
-                  "LBA" = db.censusnz::LBA,
-                  "DHB" = db.censusnz::DHB,
-                  "TA" = db.censusnz::TA,
-                  "RC" = db.censusnz::RC,
-                  "WARD" = db.censusnz::WARD
+  result = switch(EXPR = paste0(geography, year),
+                  "SA12006"  = db.censusnz::SA1_2006,
+                  "SA12013"  = db.censusnz::SA1_2013,
+                  "SA12018"  = db.censusnz::SA1_2018,
+                  "SA22006"  = db.censusnz::SA2_2006,
+                  "SA22013"  = db.censusnz::SA2_2013,
+                  "SA22018"  = db.censusnz::SA2_2018,
+                  "LBA2006"  = db.censusnz::LBA_2006,
+                  "LBA2013"  = db.censusnz::LBA_2013,
+                  "LBA2018"  = db.censusnz::LBA_2018,
+                  "DHB2006"  = db.censusnz::DHB_2006,
+                  "DHB2013"  = db.censusnz::DHB_2013,
+                  "DHB2018"  = db.censusnz::DHB_2018,
+                  "TA2006"   = db.censusnz::TA_2006,
+                  "TA2013"   = db.censusnz::TA_2013,
+                  "TA2018"   = db.censusnz::TA_2018,
+                  "RC2006"   = db.censusnz::RC_2006,
+                  "RC2013"   = db.censusnz::RC_2013,
+                  "RC2018"   = db.censusnz::RC_2018,
+                  "WARD2006" = db.censusnz::WARD_2006,
+                  "WARD2013" = db.censusnz::WARD_2013,
+                  "WARD2018" = db.censusnz::WARD_2018
                   )
+
   return(result)
 }

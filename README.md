@@ -11,7 +11,7 @@ status](https://travis-ci.org/harmonic-analytics/censusnz.svg?branch=master)](ht
 
 This package provides an interface to the NZ Census data, returning
 tidyverse-ready data frames. It also includes functions to plot data for
-selected regions and variables.
+selected regions, years and variables.
 
 Currently, the **censusnz** package provides data for seven geographical
 areas:

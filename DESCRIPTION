@@ -3,10 +3,14 @@ Package: censusnz
 Title: Get NZ Census Data
 Version: 0.3.0.9000
 Authors@R: 
-    person(given = "Alexander",
+    c(person(given = "Alexander",
            family = "Farmiloe",
            role = c("aut", "cre"),
-           email = "alex@harmonic.co.nz")
+           email = "alex@harmonic.co.nz"),
+    person(given = "Michael",
+           family = "Soffe",
+           role = "aut",
+           email = "michael@harmonic.co.nz"))
 Description: Provides an interface to get NZ census data, using
     db.censusnz.
 License: MIT + file LICENSE
