@@ -4,7 +4,7 @@
 #'   of SA1, SA2, LBA, DHB, TA, RC, WARD.
 #' @param variables A string or character vector of the variables to be selected
 #'   . Can use get_variables() to examine available variables.
-#' @param year The year of data requested. Must be one of 2006, 2013 or 2018.
+#' @param year The year of data requested, by default 2018. Must be one of 2006, 2013 or 2018.
 #'
 #' @return The resulting dataframe for the requested geography, year and and variable(s)
 #' @export
