@@ -84,7 +84,8 @@ Maybe instead of `SA1`, we investigate the data by `RC` unit, for Regional Counc
 
 ```{r}
 my_data <- get_data(geography = "RC",
-                    variables = c("status_in_employment", "smoking_status"))
+                    variables = c("status_in_employment", "smoking_status"),
+                    year = 2018)
 my_data
 ```
 
