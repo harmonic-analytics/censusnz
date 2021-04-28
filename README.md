@@ -5,8 +5,8 @@
 
 <!-- badges: start -->
 
-[![Travis build
-status](https://travis-ci.org/harmonic-analytics/censusnz.svg?branch=master)](https://travis-ci.org/harmonic-analytics/censusnz)
+[![R build
+status](https://github.com/harmonic-analytics/censusnz/workflows/R-CMD-check/badge.svg)](https://github.com/harmonic-analytics/censusnz/actions)
 <!-- badges: end -->
 
 This package provides an interface to the NZ Census data, returning
