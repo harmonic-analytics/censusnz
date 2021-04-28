@@ -7,7 +7,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 
 WORKDIR /censusnz
 
-RUN R -e "remotes::install_github('harmonic-analytics/db-censusnz', force = TRUE)"
+RUN R -e "remotes::install_github('harmonic-analytics/db-censusnz')"
 
 COPY DESCRIPTION /censusnz/
 
