@@ -25,7 +25,8 @@ library(censusnz)
 ```
 
 ```{r fig.align = 'center', fig.height = 7, fig.width = 8}
-my_plot <- plot_data("WARD", c("maori_descent", "smoking_status"), n = 6)
+yr = 2018
+my_plot <- plot_data("WARD", c("maori_descent", "smoking_status"), year = yr, n = 6)
 my_plot
 ```
 
@@ -35,14 +36,14 @@ We can change colours and labels and generally make any adjustments you would
 
 ```{r fig.align = 'center', fig.height = 7, fig.width = 8}
 my_plot + ggplot2::scale_fill_brewer(palette="Paired", labels = function(x) stringr::str_wrap(x, width=20)) +
-  ggplot2::ggtitle("2018 Census Results by Ward")
+  ggplot2::ggtitle(paste(yr, "Census Results by Ward", sep = " "))
 ```
 
 Note that if you are comparing many variables, the legend might become so large
  that it becomes awkward.
  
 ```{r fig.align = 'center', fig.height = 7, fig.width = 8}
-plot_many_vars <- plot_data("WARD", c("maori_descent", "sex", "status_in_employment", "smoking_status"))
+plot_many_vars <- plot_data("WARD", c("maori_descent", "sex", "status_in_employment", "smoking_status"), year = yr)
 plot_many_vars
 ```
 

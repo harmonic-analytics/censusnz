@@ -21,10 +21,10 @@ knitr::opts_chunk$set(
 <!-- badges: end -->
 
 This package provides an interface to the NZ Census data, returning
-  tidyverse-ready data frames. It also includes functions to plot data for
-  selected regions and variables.
+tidyverse-ready data frames. It also includes functions to plot data for
+selected regions, years and variables.
 
-Currently, the __censusnz__ package provides data for seven geographical areas:
+Currently, the **censusnz** package provides data for seven geographical areas:
 
 * **SA1**: Statistical Area 1
 * **SA2**: Statistical Area 2
@@ -34,7 +34,7 @@ Currently, the __censusnz__ package provides data for seven geographical areas:
 * **TA**: Territorial Authority
 * **RC**: Regional Council
 
-This package automatically installs the __db.censusnz__ package.
+This package automatically installs the **db.censusnz** package.
 
 ## Installation
 

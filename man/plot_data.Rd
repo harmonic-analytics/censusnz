@@ -22,7 +22,7 @@ plot_data(
 
 \item{regions}{A string or vector of the regions to be selected}
 
-\item{year}{The year of data requested. Currently the only available year is 2018, which is the default}
+\item{year}{The year of data requested. Must be chosen from either 2006, 2013 or 2018.}
 
 \item{n}{The number of areas to use as faceted plots}
 
@@ -34,7 +34,7 @@ plot_data(
 }
 \value{
 A ggplot object containing a plot of each variable, for each geographic
-region name, coloured by variable group, from 2018 NZ census data.
+region name, coloured by variable group, for 2006, 2013 or 2018 NZ census data.
 }
 \description{
 This function provides a drop-in replacement for `censusnz::get_data` that
