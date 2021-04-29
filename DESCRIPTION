@@ -1,11 +1,41 @@
-Package: censusnz
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Package: censusnz
+Title: Get NZ Census Data
+Version: 0.3.0.9000
+Authors@R: 
+    c(person(given = "Alexander",
+           family = "Farmiloe",
+           role = c("aut", "cre"),
+           email = "alex@harmonic.co.nz"),
+    person(given = "Michael",
+           family = "Soffe",
+           role = "aut",
+           email = "michael@harmonic.co.nz"))
+Description: Provides an interface to get NZ census data, using
+    db.censusnz.
+License: MIT + file LICENSE
+Imports:
+    assertthat,
+    db.censusnz,
+    dplyr,
+    forcats,
+    ggplot2,
+    magrittr,
+    pkgload,
+    stringr,
+    tibble,
+    tidyselect,
+    viridis,
+    RColorBrewer
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat,
+	covr
+VignetteBuilder: 
+    knitr
+Remotes:
+    harmonic-analytics/db-censusnz
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 7.1.1
