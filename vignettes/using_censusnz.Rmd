@@ -23,7 +23,7 @@ library(censusnz)
 ```
 
 To begin investigating NZ Census data, running `get_variables` will provide a
-list of all the available variables and the geographical levels at which they
+list of all the available variables and the geographical levels and years at which they
 are available. It is useful for general exploration as well as confirmation of
 the exact names of variables in the data.
 
@@ -43,7 +43,7 @@ relevant_vars
 ```
 
 We have found variables `status_in_employment` and `smoking_status` as
-expected, and we have these variables for a range of geographical levels. To
+expected, and we have these variables for a range of geographical levels and years. To
 select a geographical level, consider the breakdown of their relationships from
 Stats NZ.
 
