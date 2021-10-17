@@ -71,7 +71,8 @@ get_data = function(geography = NULL, variables = NULL, year = 2018) {
 
           return(data_returned)
         }
-      ) %>%  dplyr::bind_rows()
+      ) %>%  data.table::rbindlist(use.names = T) %>%
+      dplyr::as_tibble()
 
     # Filter Data
     relevant_hierarchies = c(

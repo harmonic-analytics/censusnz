@@ -10,12 +10,17 @@ Authors@R:
     person(given = "Michael",
            family = "Soffe",
            role = "aut",
-           email = "michael@harmonic.co.nz"))
+           email = "michael@harmonic.co.nz"),
+    person(given = "Emma",
+           family = "Doolin",
+           role = "aut",
+           email = "emma@harmonic.co.nz"))
 Description: Provides an interface to get NZ census data, using
     db.censusnz.
 License: MIT + file LICENSE
 Imports:
     assertthat,
+    data.table,
     db.censusnz,
     dplyr,
     forcats,
