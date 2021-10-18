@@ -1,3 +1,8 @@
+# censusnz 0.4.0
+
+* Reconfigured to include dwelling and household variables
+* Updated `get_data()` to handled multiple years and to warn if variables are not available for certain geography-year combinations
+
 # censusnz 0.3.0.9000
 
 * Removed `plot_relative`, functionality replaced by `position = 'fill'` in `plot_data`
